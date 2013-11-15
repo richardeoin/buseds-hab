@@ -9,3 +9,6 @@
 | Accelerometer |
 | Gyroscope |
 | Magnetometer |
+| IMU Processor |
+| GPS | EM406 |
+| Radio | NTX2 |
