@@ -4,64 +4,64 @@ TODO: Find a better name for this project than "buseds-hab"!
 
 ### Temperature Sensor
 
-**Chip**: TMP102
+* *Chip*: TMP102
 
-**Product Page**: [Sparkfun](https://www.sparkfun.com/products/9418)
+* *Product Page*: [Sparkfun](https://www.sparkfun.com/products/9418)
 
-**Datasheet**: [TI](https://www.sparkfun.com/datasheets/Sensors/Temperature/tmp102.pdf)
+* *Datasheet*: [TI](https://www.sparkfun.com/datasheets/Sensors/Temperature/tmp102.pdf)
 
-**Bus**: I2C
+* *Bus*: I2C
 
-**Bus Address**: 0x48 - 0x4B
+* *Bus Address*: 0x48 - 0x4B
 
-**Weight**:
+* *Weight*:
 
-**Current Draw Guess**: 10µA
+* *Current Draw Guess*: 10µA
 
-**Minimum Operating Temperature**: -55°C
+* *Minimum Operating Temperature*: -55°C
 
 ### Pressure Sensor
 
-**Chip**: BMP085
+* *Chip*: BMP085
 
-**Product Page**: [Sparkfun](https://www.sparkfun.com/products/retired/9694)
+* *Product Page*: [Sparkfun](https://www.sparkfun.com/products/retired/9694)
 
-**Datasheet**: [Bosch](http://dlnmh9ip6v2uc.cloudfront.net/datasheets/Sensors/Pressure/BST-BMP085-DS000-06.pdf)
+* *Datasheet*: [Bosch](http://dlnmh9ip6v2uc.cloudfront.net/datasheets/Sensors/Pressure/BST-BMP085-DS000-06.pdf)
 
-**Bus**: I2C
+* *Bus*: I2C
 
-**Bus Address**: 0xEE
+* *Bus Address*: 0xEE
 
-**Weight**:
+* *Weight*:
 
-**Current Draw**: 10µA
+* *Current Draw*: 10µA
 
-**Minimum Operating Temperature**: -40°C (0°C for full accuaracy)
+* *Minimum Operating Temperature*: -40°C (0°C for full accuaracy)
 
 ### IMU
 
-**Product Page**: [Sparkfun](https://www.sparkfun.com/products/10736)
+* *Product Page*: [Sparkfun](https://www.sparkfun.com/products/10736)
 
-**Schematic**: [Sparkfun](https://www.sparkfun.com/datasheets/Sensors/IMU/9DOF-Razor-v14.pdf)
+* *Schematic*: [Sparkfun](https://www.sparkfun.com/datasheets/Sensors/IMU/9DOF-Razor-v14.pdf)
 
-**Weight**:
+* *Weight*:
 
 #### Accelerometer
 
-**Chip**:
+* *Chip*:
 
-**Datasheet**:
+* *Datasheet*:
 
-**Current Draw**:
+* *Current Draw*:
 
-**Minimum Operating Temperature**:
+* *Minimum Operating Temperature*:
 
 #### Gyroscope
 
-**Chip**:
+* *Chip*:
 
-**Datasheet**:
+* *Datasheet*:
 
-**Current Draw**:
+* *Current Draw*:
 
-**Minimum Operating Temperature**:
+* *Minimum Operating Temperature*:
