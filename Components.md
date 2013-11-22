@@ -9,5 +9,6 @@
 | Gyroscope | ITG-3200 | [Sparkfun] (https://www.sparkfun.com/products/9793) | [InvenSense] (https://www.sparkfun.com/datasheets/Sensors/Gyro/PS-ITG-3200-00-01.4.pdf) | I2C 0xD0 - 0xD2 || 6.5mA @ 2.5V | -40°C
 | Magnetometer | HMC5883L | [Sparkfun] (https://www.sparkfun.com/products/10494) | [Honeywell] (http://dlnmh9ip6v2uc.cloudfront.net/datasheets/Sensors/Magneto/HMC5883L-FDS.pdf) | I2C 0x3C || 100μA @ 2.5V | -30°C
 | IMU Processor |
-| GPS | EM406 | [Sparkfun] (https://www.sparkfun.com/products/465) | [GlobalSat] (https://www.sparkfun.com/datasheets/GPS/EM-406A_User_Manual.PDF) ||| 44µA (70µA at 4.5-6.5V) | -40°C to +85°C
-| Radio | NTX2 | [Radiomatrix] (http://www.radiometrix.com/content/ntx2) | [Radiomatrix] (http://www.radiometrix.com/files/additional/ntx2nrx2.pdf) |||  | -10°C to +60°C
+| GPS | EM406 | [Sparkfun] (https://www.sparkfun.com/products/465) | [GlobalSat] (https://www.sparkfun.com/datasheets/GPS/EM-406A_User_Manual.PDF) | Serial 8N1 4800 || 70mA @ 4.5-6.5V | -40°C
+| Radio | NTX2 | [Radiomatrix] (http://www.radiometrix.com/content/ntx2) | [Radiomatrix] (http://www.radiometrix.com/files/additional/ntx2nrx2.pdf) | Serial RTTY 8N2 50 / 300 || 18mA | -10°C (Will drift anyhow)
+| SD Card | | | | SPI 1MHz || 30mA |
