@@ -160,51 +160,31 @@ $(OUTPUT_DIR)/$(PROJECT_NAME).elf: $(OBJECTS) $(LINKERS) gdbscript
 #
 .PHONY: sources
 sources:
-	@$(ECHO) 'Building sources.mk...' 
+	@$(ECHO) 'Building sources.mk...'
 	@$(ECHO)
 	@$(FIND) $(SOURCE_DIR)/ | $(GREP) \\.[cS]$ > sources.mk
 	@$(CAT) sources.mk
 	@$(SED) -i '1s/^/SOURCES += /' sources.mk
 	@$(SED) -i 's/$$/ \\/' sources.mk
 
-# Downloads the firmware over lpclink
-#
-# The 'symbol-file' command in the .gdbscript has the correct symbol file
-# written to it.
-#
-.PHONY: download
-download: all
-	$(CHECKSUM) -p $(CHIP) -d $(OUTPUT_DIR)/$(PROJECT_NAME).bin
-	@$(ECHO)
-	@$(ECHO)
-	$(LPCLINK) -wire=winusb -p$(CHIP) -vendor=NXP -flash-load-exec=$(OUTPUT_DIR)/$(PROJECT_NAME).bin -g
-
 # Creates a gdb script if required
 #
 #
 #
 gdbscript:
-	@$(ECHO) "# Load our .elf file into GDB" >> gdbscript
-	@$(ECHO) "file" > gdbscript
+	@$(ECHO) "# Load our .elf file into GDB" > gdbscript
+	@$(ECHO) "file" >> gdbscript
 	@$(ECHO) "# Define a target description to override the lpc-link default" >> gdbscript
 	@$(ECHO) "set tdesc filename arm-core.xml" >> gdbscript
 	@$(ECHO) "# Required for semihosting" >> gdbscript
 	@$(ECHO) "set mem inaccessible-by-default off" >> gdbscript
-	@$(ECHO) "# Connect to the debug server launched by make lpc-link" >> gdbscript
-	@$(ECHO) "target extended-remote" >> gdbscript
-	@$(ECHO) "# Enable semihosting" >> gdbscript
-	@$(ECHO) "monitor semihosting enable" >> gdbscript
+	@$(ECHO) "# Define the debug probe we're using" >> gdbscript
+	@$(ECHO) "target extended-remote /dev/ttyACM0" >> gdbscript
+	@$(ECHO) "# Scan for devices" >> gdbscript
+	@$(ECHO) "monitor swdp_scan" >> gdbscript
 
-# Flashes the firmware to the lpc-link and starts the debug server
-#
-# Blocking. A random port is used and substituted into the .gdbscript
-#
-.PHONY: lpc-link
-lpc-link: gdbscript
-	$(eval PORT := $(shell $(SHUF) -i 2000-65000 -n 1))
-	@$(SED) -i 's/^target extended-remote.*$$/target extended-remote :$(PORT)/' gdbscript
-	$(DFUUTIL) -d 0x471:0xdf55 -c 0 -t 2048 -R -D $(DFUFIRMWARE)
-	$(LPCLINK) -wire=winusb -p$(CHIP) -vendor=NXP -server=:$(PORT)
+#	@$(ECHO) "# Enable semihosting" >> gdbscript
+#	@$(ECHO) "monitor semihosting enable" >> gdbscript
 
 # Removes everything in the output directory
 #
