@@ -25,13 +25,16 @@
 #include "LPC11xx.h"
 
 /**
- * Interface to the physical world
+ * Interface to the physical world on P2[2]
  */
 #ifndef RTTY_TEST
 
-#define RTTY_ACTIVATE()
-#define RTTY_DEACTIVATE()
-#define RTTY_SET(b)		
+#define RTTY_PORT		LPC_GPIO2
+#define RTTY_PIN		2
+
+#define RTTY_ACTIVATE()		RTTY_PORT->DIR |=  (1 << RTTY_PIN)
+#define RTTY_DEACTIVATE()	RTTY_PORT->DIR &= ~(1 << RTTY_PIN)
+#define RTTY_SET(b)		RTTY_PORT->MASKED_ACCESS[1 << RTTY_PIN] = (~b << RTTY_PIN)
 #define RTTY_NEXT()
 
 #else
@@ -40,7 +43,7 @@
 #define RTTY_ACTIVATE()
 #define RTTY_DEACTIVATE()
 #define RTTY_SET(b)		printf("%d", b & 1)
-#define RTTY_NEXT()		printf("\n");
+#define RTTY_NEXT()		printf("\n")
 
 #endif
 
@@ -107,10 +110,10 @@ void rtty_tick(void) {
     if (rtty_phase == 0) { // Start
       // Low
       RTTY_SET(0);
-    } else if (rtty_phase <= ASCII_BITS) {
+    } else if (rtty_phase < ASCII_BITS + 1) {
       // Data
       RTTY_SET(rtty_string[rtty_index] >> (rtty_phase - 1));
-    } else if (rtty_phase <= BITS_PER_CHAR) { // Stop 1
+    } else if (rtty_phase < BITS_PER_CHAR) { // Stop
       // High
       RTTY_SET(1);
     }
@@ -122,10 +125,10 @@ void rtty_tick(void) {
 
       if (rtty_index >= rtty_string_length) { // All done, deactivate
 	rtty_string_length = 0; // Deactivate
-
-	RTTY_DEACTIVATE();
       }
     }
+  } else {
+    RTTY_DEACTIVATE();
   }
 }
 

@@ -1,6 +1,6 @@
 /* 
- * Demo C Application: Toggles an output at 20Hz.
- * Copyright (C) 2013  Richard Meadows
+ * Bit-bands RTTY
+ * Copyright (C) 2013  richard
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,31 +22,11 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "LPC11xx.h"
-#include "rtty.h"
+#ifndef RTTY_H
+#define RTTY_H
 
-#define RTTY_BAUD	50
+int rtty_active(void);
+int rtty_set_string(char* string, uint32_t length);
+void rtty_tick(void);
 
-int main (void) {
-  SystemInit();
-
-  /* Update the value of SystemCoreClock */
-  SystemCoreClockUpdate();
-
-  /* Set an LED output on P0[7]*/
-  LPC_GPIO0->DIR |= 1 << 7;
-
-  /* Configure the SysTick */
-  SysTick_Config(SystemCoreClock / RTTY_BAUD);
-
-  while (1) {
-    rtty_set_string("M0SBU TEST TEST", 15);
-  }
-}
-
-extern void SysTick_Handler(void) {
-  /* Toggle an LED */
-  LPC_GPIO0->DATA ^= 1 << 7;
-  /* Push RTTY bits */
-  rtty_tick();
-}
+#endif /* RTTY_H */
