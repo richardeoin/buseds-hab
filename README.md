@@ -4,6 +4,8 @@ TODO: Find a better name for this project than "buseds-hab"!
 
 ### [Block Diagram](Block-Diagram.md)
 
+### [Power Budget](power-budget.md)
+
 ### Design Notes
 
 The electronics collects data from the sensors and GPS. [Common GPS errors](http://ukhas.org.uk/guides:common_coding_errors_payload_testing).
