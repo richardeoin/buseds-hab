@@ -1,0 +1,9 @@
+# Backup files
+*~
+#*#
+
+# gdbscript
+gdbscript
+
+# The output directory
+out/
