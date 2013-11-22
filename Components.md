@@ -15,4 +15,4 @@
 | SD Card Holder | | [Proto PIC](http://proto-pic.co.uk/breakout-board-for-microsd-transflash/) | | | | | | £4.59
 | mBed || [mBed](mbed.org) | | | | [100mA](http://mbed.org/users/no2chem/notebook/mbed-power-controlconsumption/) |
 | LPC1115 | LPC1115 | [Farnell](http://uk.farnell.com/nxp/om13035/lpc1115-lpcxpresso-eval-board/dp/2103787) | [Schematic](http://www.embeddedartists.com/sites/default/files/docs/schematics/LPCXpressoLPC1114revA.pdf) [Datasheet](http://www.nxp.com/documents/data_sheet/LPC111X.pdf) | | | 5mA @ 24MHz | -40°C | £15.15
-| Battery Connectors | SPH-004T-P0.5S, PHR-2 | [Contact](http://uk.farnell.com/jsp/search/productdetail.jsp?SKU=1830762) [Housing](http://uk.farnell.com/jsp/search/productdetail.jsp?SKU=3616186) | | | | | | | £0.56
+| Battery Connectors | SPH-004T-P0.5S, PHR-2 | [Contact](http://uk.farnell.com/jsp/search/productdetail.jsp?SKU=1830762) [Housing](http://uk.farnell.com/jsp/search/productdetail.jsp?SKU=3616186) | | | | | | £0.56
