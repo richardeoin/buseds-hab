@@ -167,6 +167,13 @@ sources:
 	@$(SED) -i '1s/^/SOURCES += /' sources.mk
 	@$(SED) -i 's/$$/ \\/' sources.mk
 
+# Builds the tests
+#
+#
+#
+test:
+	@cd test && $(MAKE) all && cd ..
+
 # Creates a gdb script if required
 #
 #
