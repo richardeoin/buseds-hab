@@ -1,6 +1,6 @@
 /* 
- * Demo C Application: Toggles an output at 20Hz.
- * Copyright (C) 2013  Richard Meadows
+ * Reads temperature data from a TMP102, returns as a double
+ * Copyright (C) 2013  richard
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,41 +22,9 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "LPC11xx.h"
-#include "rtty.h"
-#include "i2c.h"
-#include "tmp102.h"
+#ifndef TMP102_H
+#define TMP102_H
 
-#define RTTY_BAUD	50
+double get_temperature(void);
 
-int main (void) {
-  SystemInit();
-
-  /* Update the value of SystemCoreClock */
-  SystemCoreClockUpdate();
-
-  /* Initialise I2C */
-  i2c_init();
-
-  /* Set an LED output on P0[7]*/
-  LPC_GPIO0->DIR |= 1 << 7;
-
-  /* Configure the SysTick */
-  SysTick_Config(SystemCoreClock / RTTY_BAUD);
-
-  while (1) {
-    rtty_set_string("M0SBU TEST TEST", 15);
-  }
-}
-
-double temp;
-
-extern void SysTick_Handler(void) {
-  /* Toggle an LED */
-  LPC_GPIO0->DATA ^= 1 << 7;
-  /* Push RTTY bits */
-  rtty_tick();
-
-  /* Read temperature */
-  temp = get_temperature();
-}
+#endif /* TMP102_H */

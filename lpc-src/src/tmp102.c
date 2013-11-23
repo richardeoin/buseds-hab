@@ -1,6 +1,6 @@
 /* 
- * Demo C Application: Toggles an output at 20Hz.
- * Copyright (C) 2013  Richard Meadows
+ * Reads temperature data from a TMP102, returns as a double
+ * Copyright (C) 2013  richard
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,41 +22,46 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "LPC11xx.h"
-#include "rtty.h"
 #include "i2c.h"
-#include "tmp102.h"
 
-#define RTTY_BAUD	50
+/**
+ * The address of the TMP102 with ADDR pulled to V+
+ */
+#define TMP102_ADDRESS 0x92
+/**
+ * TMP102 Registers
+ */
+#define TMP102_TEMPERATURE_REG	0x00
+#define TMP102_CONTROL_REG	0x01
 
-int main (void) {
-  SystemInit();
+/**
+ * By default the TMP102 converts readings at 4Hz
+ */
 
-  /* Update the value of SystemCoreClock */
-  SystemCoreClockUpdate();
+/**
+ * Gets the temperature from the TMP102
+ */
+double get_temperature(void) {
+  int16_t value;
 
-  /* Initialise I2C */
-  i2c_init();
+  I2CWriteLength = 2;
+  I2CReadLength = 2;
+  I2CMasterBuffer[0] = TMP102_ADDRESS;
+  I2CMasterBuffer[1] = TMP102_TEMPERATURE_REG;
+  I2CMasterBuffer[2] = TMP102_ADDRESS | RD_BIT;
 
-  /* Set an LED output on P0[7]*/
-  LPC_GPIO0->DIR |= 1 << 7;
+  if (i2c_engine() == I2CSTATE_ACK) { // All is well
+    /* 12 bit data, MSb first */
+    value = (I2CSlaveBuffer[0] << 4) | (I2CSlaveBuffer[1] >> 4);
 
-  /* Configure the SysTick */
-  SysTick_Config(SystemCoreClock / RTTY_BAUD);
+    /* Sign extension from 12-bit to 16-bit */
+    if (value & 0x0800) {
+      value |= 0xF000;
+    }
 
-  while (1) {
-    rtty_set_string("M0SBU TEST TEST", 15);
+    /* The temperature reading is scaled at 0.0625°C/count */
+    return (double)value * 0.0625;
+  } else { // Fail
+    return -1000;
   }
-}
-
-double temp;
-
-extern void SysTick_Handler(void) {
-  /* Toggle an LED */
-  LPC_GPIO0->DATA ^= 1 << 7;
-  /* Push RTTY bits */
-  rtty_tick();
-
-  /* Read temperature */
-  temp = get_temperature();
 }
