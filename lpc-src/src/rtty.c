@@ -136,10 +136,14 @@ void rtty_tick(void) {
 #ifdef RTTY_TEST
 
 int main() {
+  printf("*** RTTY_TEST ***\n\n");
+
   rtty_set_string("RTTY", 4);
   while (rtty_active()) {
     rtty_tick();
   }
+
+  printf("\n*** DONE ***\n");
 }
 
 #endif

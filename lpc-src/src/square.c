@@ -36,13 +36,13 @@ int square(int x) {
 #include <stdio.h>
 
 int main(int argc, char** argv) {
-  printf("*** SQUARE_C_TEST ***\n");
+  printf("*** SQUARE_TEST ***\n\n");
 
   assert(square(2) == 4);
 
   assert(square(4) == 15); // ERROR
 
-  printf("*** DONE ***\n");
+  printf("\n*** DONE ***\n");
 }
 
 #endif
