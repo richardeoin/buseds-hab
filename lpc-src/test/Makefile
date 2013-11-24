@@ -30,7 +30,7 @@
 #
 CFLAGS	= $(FLAGS) -Wall -Wextra -std=gnu99 -ffunction-sections -fdata-sections
 
-all: square-test rtty-test tmp102-test
+all: square-test rtty-test tmp102-test altitude-test
 
 square-test: ../src/square.c
 	$(CC) $(CFLAGS) -D SQUARE_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $<
@@ -40,3 +40,6 @@ rtty-test: ../src/rtty.c
 
 tmp102-test: ../src/tmp102.c ../src/i2c.c
 	$(CC) $(CFLAGS) -D TMP102_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $< ../src/i2c.c
+
+altitude-test: ../src/altitude.c
+	$(CC) $(CFLAGS) -D ALTITUDE_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $< -lm
