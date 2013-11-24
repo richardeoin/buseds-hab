@@ -143,7 +143,7 @@ $(OUTPUT_DIR)/$(PROJECT_NAME).elf: $(OBJECTS) $(LINKERS) gdbscript
 	@$(SED) -i 's/^file.*$$/file $(OUTPUT_DIR)\/$(PROJECT_NAME)\.elf/' gdbscript
 	@$(ECHO)
 	@$(ECHO) 'Linking $@...'
-	$(CC) $(LDFLAGS) $(addprefix -T,$(LINKERS)) -Wl,-Map,$(@:.elf=.map) -o $@ $(OBJECTS)
+	$(CC) $(addprefix -T,$(LINKERS)) -Wl,-Map,$(@:.elf=.map) -o $@ $(OBJECTS) $(LDFLAGS)
 	@$(OBJCOPY) -O binary $@ $(@:.elf=.bin)
 	@$(OBJCOPY) -O ihex $@ $(@:.elf=.hex)
 	@$(ECHO)
