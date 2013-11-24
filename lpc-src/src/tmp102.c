@@ -25,6 +25,10 @@
 #include "i2c.h"
 
 /**
+ * DATASHEET: https://www.sparkfun.com/datasheets/Sensors/Temperature/tmp102.pdf
+ */
+
+/**
  * The address of the TMP102 with ADDR pulled to V+
  */
 #define TMP102_ADDRESS 0x92
@@ -38,6 +42,18 @@
  * By default the TMP102 converts readings at 4Hz
  */
 
+/**
+ * Processes a temperature value for the TMP102 into a dobule.
+ */
+double process_temperature(int16_t value) {
+ /* Sign extension from 12-bit to 16-bit */
+  if (value & 0x0800) {
+    value |= 0xF000;
+  }
+
+  /* The temperature reading is scaled at 0.0625°C/count */
+  return (double)value * 0.0625;
+}
 /**
  * Gets the temperature from the TMP102
  */
@@ -54,14 +70,44 @@ double get_temperature(void) {
     /* 12 bit data, MSb first */
     value = (I2CSlaveBuffer[0] << 4) | (I2CSlaveBuffer[1] >> 4);
 
-    /* Sign extension from 12-bit to 16-bit */
-    if (value & 0x0800) {
-      value |= 0xF000;
-    }
-
-    /* The temperature reading is scaled at 0.0625°C/count */
-    return (double)value * 0.0625;
+    return process_temperature(value);
   } else { // Fail
     return -1000;
   }
 }
+
+#ifdef TMP102_TEST
+
+#include <assert.h>
+#include <stdio.h>
+#include <stdlib.h>
+
+/**
+ * Performs a test of the conversion routine.
+ */
+void process_test(int16_t value, double result) {
+  if (process_temperature(value) != result) {
+    printf("ERROR: 0x%03x = %g°C, not %g°C as specified!\n",
+	   value, process_temperature(value), result);
+    exit(1);
+  } else {
+    printf("0x%03X = %g°C\n", value, process_temperature(value));
+  }
+}
+
+int main(void) {
+  printf("*** TMP102_TEST ***\n\n");
+
+  /* From Table 5. */
+  process_test(0x7FF, 127.9375);
+  process_test(0x640, 100);
+  process_test(0x4B0, 75);
+  process_test(0x000, 0);
+  process_test(0xFFC, -0.25);
+  process_test(0xE70, -25);
+  process_test(0xC90, -55);
+
+  printf("\n*** DONE ***\n");
+}
+
+#endif

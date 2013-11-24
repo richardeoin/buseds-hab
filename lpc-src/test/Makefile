@@ -30,10 +30,13 @@
 #
 CFLAGS	= $(FLAGS) -Wall -Wextra -std=gnu99 -ffunction-sections -fdata-sections
 
-all: square-test rtty-test
+all: square-test rtty-test tmp102-test
 
 square-test: ../src/square.c
 	$(CC) $(CFLAGS) -D SQUARE_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $<
 
 rtty-test: ../src/rtty.c
 	$(CC) $(CFLAGS) -D RTTY_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $<
+
+tmp102-test: ../src/tmp102.c ../src/i2c.c
+	$(CC) $(CFLAGS) -D TMP102_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $< ../src/i2c.c
