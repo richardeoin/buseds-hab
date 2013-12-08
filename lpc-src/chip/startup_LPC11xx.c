@@ -155,6 +155,6 @@ void Default_Handler(void) {
 /* HardFault hander */
 void HardFault_Handler(void) {
   /* Drat! A HardFault */
-  
+
   while(1);
 }
