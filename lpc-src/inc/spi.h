@@ -1,5 +1,5 @@
 /* 
- * SPI0 module driver.
+ * Reads data frames from the SPI1 module.
  * Copyright (C) 2013  Richard Meadows
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
