@@ -25,6 +25,7 @@
 #include "LPC11xx.h"
 #include "rtty.h"
 #include "i2c.h"
+#include "spi.h"
 #include "tmp102.h"
 
 #define RTTY_BAUD	50
@@ -35,8 +36,8 @@ int main (void) {
   /* Update the value of SystemCoreClock */
   SystemCoreClockUpdate();
 
-  /* Initialise I2C */
-  i2c_init();
+  /* Initialise SPI */
+  spi_init(0);
 
   /* Set an LED output on P0[7]*/
   LPC_GPIO0->DIR |= 1 << 7;
@@ -45,7 +46,6 @@ int main (void) {
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
   while (1) {
-    rtty_set_string("M0SBU TEST TEST", 15);
   }
 }
 
@@ -54,9 +54,4 @@ double temp;
 extern void SysTick_Handler(void) {
   /* Toggle an LED */
   LPC_GPIO0->DATA ^= 1 << 7;
-  /* Push RTTY bits */
-  rtty_tick();
-
-  /* Read temperature */
-  temp = get_temperature();
 }
