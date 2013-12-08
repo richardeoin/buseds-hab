@@ -1,6 +1,6 @@
 /* 
- * Demo C Application: Toggles an output at 20Hz.
- * Copyright (C) 2013  Richard Meadows
+ * Decodes data from the IMU
+ * Copyright (C) 2013  richard
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -23,37 +23,36 @@
  */
 
 #include "LPC11xx.h"
-#include "rtty.h"
-#include "i2c.h"
-#include "tmp102.h"
-// IMU
+#include "stdio.h"
 #include "imu.h"
-#include "spi.h"
 
-#define RTTY_BAUD	50
-
-int main (void) {
-  SystemInit();
-
-  /* Update the value of SystemCoreClock */
-  SystemCoreClockUpdate();
-
-  /* Initialise SPI */
-  spi_init(process_imu_frame);
-
-  /* Set an LED output on P0[7]*/
-  LPC_GPIO0->DIR |= 1 << 7;
-
-  /* Configure the SysTick */
-  SysTick_Config(SystemCoreClock / RTTY_BAUD);
-
-  while (1) {
-  }
+/**
+ * Assembles a float from an integer and fractional part, where the
+ * fractional part always has two digits.
+ */
+float make_float_from_parts(int var_i, int var_f) {
+  return var_i +
+    ((float)var_f / 100) * ((var_i > 0) ? 1 : -1) ;
 }
+/**
+ * Processes a frame from the IMU. Any fractional number alway have
+ * two digits.
+ */
+void process_imu_frame(uint8_t* data, uint16_t len) {
+  int count;
+  int roll_i, roll_f, pitch_i, pitch_f, yaw_i, yaw_f;
 
-double temp;
+  count = sscanf((char*)data,
+		 "!ANG:%d.%d,%d.%d,%d.%d,AN:%d,%d,%d,%d,%d,%d,%d,%d,%d",
+		 &roll_i, &roll_f, &pitch_i, &pitch_f, &yaw_i, &yaw_f,// Angle
+		 &imu_raw.gyro.x, &imu_raw.gyro.y, &imu_raw.gyro.z, // Gyroscope
+		 &imu_raw.accel.x, &imu_raw.accel.y, &imu_raw.accel.z, // Accelerometer
+		 &imu_raw.magneto.x, &imu_raw.magneto.y, &imu_raw.magneto.z); // Magneto
 
-extern void SysTick_Handler(void) {
-  /* Toggle an LED */
-  LPC_GPIO0->DATA ^= 1 << 7;
+  imu_angle.roll = make_float_from_parts(roll_i, roll_f);
+  imu_angle.pitch = make_float_from_parts(pitch_i, pitch_f);
+  imu_angle.yaw = make_float_from_parts(yaw_i, yaw_f);
+
+  len++; // UNUSED
+  count++; // UNUSED
 }

@@ -1,6 +1,6 @@
 /* 
- * Demo C Application: Toggles an output at 20Hz.
- * Copyright (C) 2013  Richard Meadows
+ * <one line to give the program's name and a brief idea of what it does.>
+ * Copyright (C) 2013  richard
  * 
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
@@ -22,38 +22,29 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#include "LPC11xx.h"
-#include "rtty.h"
-#include "i2c.h"
-#include "tmp102.h"
-// IMU
-#include "imu.h"
-#include "spi.h"
+#ifndef IMU_H
+#define IMU_H
 
-#define RTTY_BAUD	50
+/**
+ * Useful struct to have.
+ */
+struct vector {
+  int x, y, z;
+};
 
-int main (void) {
-  SystemInit();
+/**
+ * Processed data from the IMU
+ */
+struct imu_angle {
+  float roll, pitch, yaw;
+} imu_angle;
+/**
+ * Raw data from the IMU
+ */
+struct imu_raw {
+  struct vector gyro, accel, magneto;
+} imu_raw;
 
-  /* Update the value of SystemCoreClock */
-  SystemCoreClockUpdate();
+void process_imu_frame(uint8_t* data, uint16_t len);
 
-  /* Initialise SPI */
-  spi_init(process_imu_frame);
-
-  /* Set an LED output on P0[7]*/
-  LPC_GPIO0->DIR |= 1 << 7;
-
-  /* Configure the SysTick */
-  SysTick_Config(SystemCoreClock / RTTY_BAUD);
-
-  while (1) {
-  }
-}
-
-double temp;
-
-extern void SysTick_Handler(void) {
-  /* Toggle an LED */
-  LPC_GPIO0->DATA ^= 1 << 7;
-}
+#endif /* IMU_H */
