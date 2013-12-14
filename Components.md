@@ -16,3 +16,14 @@
 | mBed || [mBed](mbed.org) | | | | [100mA](http://mbed.org/users/no2chem/notebook/mbed-power-controlconsumption/) |
 | LPC1115 | LPC1115 | [Farnell](http://uk.farnell.com/nxp/om13035/lpc1115-lpcxpresso-eval-board/dp/2103787) | [Schematic](http://www.embeddedartists.com/sites/default/files/docs/schematics/LPCXpressoLPC1114revA.pdf) [Datasheet](http://www.nxp.com/documents/data_sheet/LPC111X.pdf) | | | 5mA @ 24MHz | -40°C | £15.15
 | Battery Connectors | SPH-004T-P0.5S, PHR-2 | [Contact](http://uk.farnell.com/jsp/search/productdetail.jsp?SKU=1830762) [Housing](http://uk.farnell.com/jsp/search/productdetail.jsp?SKU=3616186) | | | | | | £0.56
+
+## Minor Components
+
+| ID | Part Number | Description | Supplier | Order Code | Quantity
+| --- | --- | --- | --- | --- | ---
+| U1 | MCP1827 | ADJ VREG 1.5A | Farnell | [1840847](http://uk.farnell.com/jsp/search/productdetail.jsp?id=1840847) | 1
+| C1, C2 | | 1µF Capacitor, 16V, 5mm | Farnell | [1236655](http://uk.farnell.com/jsp/search/productdetail.jsp?id=1236655) | 2
+| Q1, Q2 | PSMN2R7-30PL | MOSFET,N CH,30V,100A,TO-220 | Farnell | [1845665](http://uk.farnell.com/jsp/search/productdetail.jsp?id=1845665) | 2
+| JP5, JP6, JP7 | CTB3051/2BK | TERMINAL BLOCK, PCB, 3.5MM, 2WAY | Farnell | [3882615](http://uk.farnell.com/jsp/search/productdetail.jsp?id=3882615) | 3
+| LED1 | | LED, ORANGE, 3MM, 50MCD, 629NM | Farnell | [2112099](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2112099) | 1
+| LED2 | | LED, GREEN, 3MM, 50MCD, 572NM | Farnell | [2112096](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2112096) | 1
