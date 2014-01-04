@@ -34,3 +34,5 @@
 | R6 | | 47kΩ Resistor, 0.25W | Generic | | 1
 | R8 | | 115kΩ Resistor, 0.25W, 1% | Farnell | [2329996](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2329996) | 1
 | R13, R14 | | 470Ω Resistor | Generic | 2
+| X1 | 5-1814832-1 | SMA Socket, Straight Vertical, PCB Mount, 50Ω | Farnell | [1248990](http://uk.farnell.com/jsp/search/productdetail.jsp?id=1248990) | 1
+| Various | M20-7822046 | CONNECTOR, RECEPTACLE, THT, 2.54MM, 20P | Farnell | [7991967](http://uk.farnell.com/jsp/search/productdetail.jsp?id=7991967) | 4
