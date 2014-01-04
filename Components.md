@@ -28,3 +28,9 @@
 | LED1 | | LED, ORANGE, 3MM, 50MCD, 629NM | Farnell | [2112099](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2112099) | 1
 | LED2 | | LED, GREEN, 3MM, 50MCD, 572NM | Farnell | [2112096](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2112096) | 1
 | JTAG1 | | HEADER, VERTICAL, 2ROW, 10WAY | Farnell | [1099564](http://uk.farnell.com/jsp/search/productdetail.jsp?id=1099564) | 1
+| R1, R7, R9 - R12 | | 10kΩ Resistor, 0.25W | Generic | | 6
+| R2, R3 | | 15kΩ Resistor, 0.25W | Generic | | 2
+| R4, R5 | | 4.7kΩ Resistor, 0.25W | Generic | | 2
+| R6 | | 47kΩ Resistor, 0.25W | Generic | | 1
+| R8 | | 115kΩ Resistor, 0.25W, 1% | Farnell | [2329996](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2329996) | 1
+| R13, R14 | | 470Ω Resistor | Generic | 2
