@@ -27,7 +27,7 @@
 | JP5, JP6, JP7 | CTB3051/2BK | TERMINAL BLOCK, PCB, 3.5MM, 2WAY | Farnell | [3882615](http://uk.farnell.com/jsp/search/productdetail.jsp?id=3882615) | 3
 | LED1 | | LED, ORANGE, 3MM, 50MCD, 629NM | Farnell | [2112099](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2112099) | 1
 | LED2 | | LED, GREEN, 3MM, 50MCD, 572NM | Farnell | [2112096](http://uk.farnell.com/jsp/search/productdetail.jsp?id=2112096) | 1
-| JTAG1 | | HEADER, VERTICAL, 2ROW, 10WAY | Farnell | [1099564](http://uk.farnell.com/jsp/search/productdetail.jsp?id=1099564) | 1
+| JTAG1 | | HEADER, VERTICAL, 2ROW, 10WAY | Farnell | [1022305](http://uk.farnell.com/jsp/search/productdetail.jsp?id=1022305) | 1
 | R1, R7, R9 - R12 | | 10kΩ Resistor, 0.25W | Generic | | 6
 | R2, R3 | | 15kΩ Resistor, 0.25W | Generic | | 2
 | R4, R5 | | 4.7kΩ Resistor, 0.25W | Generic | | 2
