@@ -25,12 +25,12 @@
 #include "LPC11xx.h"
 
 /**
- * Interface to the physical world on P2[2]
+ * Interface to the physical world on P0[7] (Also red LED)
  */
 #ifndef RTTY_TEST
 
-#define RTTY_PORT		LPC_GPIO2
-#define RTTY_PIN		2
+#define RTTY_PORT		LPC_GPIO0
+#define RTTY_PIN		7
 
 #define RTTY_ACTIVATE()		RTTY_PORT->DIR |=  (1 << RTTY_PIN)
 #define RTTY_DEACTIVATE()	RTTY_PORT->DIR &= ~(1 << RTTY_PIN)

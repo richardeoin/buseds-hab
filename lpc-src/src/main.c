@@ -1,7 +1,7 @@
-/* 
+/*
  * Demo C Application: Toggles an output at 20Hz.
  * Copyright (C) 2013  Richard Meadows
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -9,10 +9,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -26,9 +26,9 @@
 #include "rtty.h"
 #include "i2c.h"
 #include "tmp102.h"
-// IMU
 #include "imu.h"
 #include "spi.h"
+#include "leds.h"
 
 #define RTTY_BAUD	50
 
@@ -39,21 +39,24 @@ int main (void) {
   SystemCoreClockUpdate();
 
   /* Initialise SPI */
-  spi_init(process_imu_frame);
+//  spi_init(process_imu_frame);
 
-  /* Set an LED output on P0[7]*/
-  LPC_GPIO0->DIR |= 1 << 7;
+  GREEN_ON();
+  YELLOW_ON();
 
   /* Configure the SysTick */
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
   while (1) {
+    rtty_set_string("M0SBU TEST TEST", 15);
+    for (int i = 0; i < 1000*100; i++);
+    YELLOW_TOGGLE();
   }
 }
 
 double temp;
 
 extern void SysTick_Handler(void) {
-  /* Toggle an LED */
-  LPC_GPIO0->DATA ^= 1 << 7;
+  /* Push RTTY bits */
+  rtty_tick();
 }
