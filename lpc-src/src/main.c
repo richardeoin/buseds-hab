@@ -38,11 +38,7 @@ int main (void) {
   /* Update the value of SystemCoreClock */
   SystemCoreClockUpdate();
 
-  /* Initialise SPI */
-//  spi_init(process_imu_frame);
-
   GREEN_ON();
-  YELLOW_ON();
 
   /* Configure the SysTick */
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
@@ -50,7 +46,7 @@ int main (void) {
   while (1) {
     rtty_set_string("M0SBU TEST TEST", 15);
     for (int i = 0; i < 1000*100; i++);
-    YELLOW_TOGGLE();
+    GREEN_TOGGLE();
   }
 }
 
