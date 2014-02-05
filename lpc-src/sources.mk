@@ -5,5 +5,6 @@ src/rtty.c \
 src/main.c \
 src/altitude.c \
 src/imu.c \
+src/protocol.c \
 src/square.c \
 src/bmp085.c \
