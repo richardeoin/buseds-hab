@@ -8,7 +8,7 @@ BUSEDS1
 
 Directly increments? Or seconds / milliseconds from power on?
 
-### Time (from GPS)
+### Time (from GPS) (Just time of day)
 
 ### GPS Latitude
 
@@ -18,9 +18,13 @@ Directly increments? Or seconds / milliseconds from power on?
 
 From GPS or derived from barometer pressure?
 
-### Temperature
+Both
 
-From barometer or the thermometer?
+### GPS Satillites in View
+
+### Temperature (Internal, from Barometer)
+
+### Temperature (External, from TMP102 by wire)
 
 ### Acceleration X
 
@@ -30,4 +34,8 @@ From barometer or the thermometer?
 
 ### Cutdown State
 
+Just a binary value
+
 ### Checksum
+
+XMODEM 16 bit CRC
