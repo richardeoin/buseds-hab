@@ -1,6 +1,6 @@
 # Compiles firmware written in C and assembler for NXP's LPC chips
 # Copyright (C) 2013  Richard Meadows
-# 
+#
 # Permission is hereby granted, free of charge, to any person obtaining
 # a copy of this software and associated documentation files (the
 # "Software"), to deal in the Software without restriction, including
@@ -8,10 +8,10 @@
 # distribute, sublicense, and/or sell copies of the Software, and to
 # permit persons to whom the Software is furnished to do so, subject to
 # the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be
 # included in all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 # EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 # MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -143,7 +143,7 @@ $(OUTPUT_DIR)/$(PROJECT_NAME).elf: $(OBJECTS) $(LINKERS) gdbscript
 	@$(SED) -i 's/^file.*$$/file $(OUTPUT_DIR)\/$(PROJECT_NAME)\.elf/' gdbscript
 	@$(ECHO)
 	@$(ECHO) 'Linking $@...'
-	$(CC) $(LDFLAGS) $(addprefix -T,$(LINKERS)) -Wl,-Map,$(@:.elf=.map) -o $@ $(OBJECTS)
+	$(CC) $(LDFLAGS) $(addprefix -T,$(LINKERS)) -Wl,-Map,$(@:.elf=.map) -o $@ $(OBJECTS) -lm
 	@$(OBJCOPY) -O binary $@ $(@:.elf=.bin)
 	@$(OBJCOPY) -O ihex $@ $(@:.elf=.hex)
 	@$(ECHO)

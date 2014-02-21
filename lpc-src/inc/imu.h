@@ -1,7 +1,7 @@
-/* 
- * <one line to give the program's name and a brief idea of what it does.>
+/*
+ * Decodes data from the IMU
  * Copyright (C) 2013  richard
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -9,10 +9,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -37,14 +37,16 @@ struct vector {
  */
 struct imu_angle {
   float roll, pitch, yaw;
-} imu_angle;
+};
 /**
  * Raw data from the IMU
  */
 struct imu_raw {
   struct vector gyro, accel, magneto;
-} imu_raw;
+};
 
 void process_imu_frame(uint8_t* data, uint16_t len);
+
+void get_imu_raw_data(struct imu_raw* data);
 
 #endif /* IMU_H */

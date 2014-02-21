@@ -26,6 +26,8 @@
 #include <string.h>
 #include <stdio.h>
 #include "protocol.h"
+#include "bmp085.h"
+#include "gps.h"
 
 int sentence_id = 0;
 
@@ -74,11 +76,18 @@ uint16_t crc_checksum(char *string)
  * Builds a communctions frame compliant with the protocol described
  * at http://ukhas.org.uk/communication:protocol
  */
-void build_communctions_frame(char* string, int string_size)
+void build_communctions_frame(char* string, int string_size, struct barometer* b)
 {
   int print_size;
 
   print_size = snprintf(string, string_size, "$$%s,%d", CALLSIGN, sentence_id++
+			/* Time */
+			/* GPS (Lat, Long, Alt, Satillies in View) */
+			/* Barometric Alt */
+			/* Internal Temperature */
+			/* External Temperature */
+			/* Acceleration */
+/* Cutdown State */
     );
 
   /* If the above print plus checksum will be truncated */

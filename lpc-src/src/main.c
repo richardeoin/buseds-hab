@@ -30,8 +30,9 @@
 #include "spi.h"
 #include "leds.h"
 #include "bmp085.h"
+#include "altitude.h"
 
-#define RTTY_BAUD	50
+#define RTTY_BAUD       50
 
 int main (void) {
   SystemInit();
@@ -52,11 +53,15 @@ int main (void) {
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
   struct barometer* b;
+  struct imu_raw ir;
 
   while (1) {
     rtty_set_string("M0SBU TEST TEST", 15);
 
     b = get_barometer();
+    get_imu_raw_data(&ir);
+
+    double a = pressure_to_altitude(b->pressure);
 
     for (int i = 0; i < 1000*100; i++);
     GREEN_TOGGLE();

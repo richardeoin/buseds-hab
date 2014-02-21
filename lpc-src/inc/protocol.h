@@ -25,8 +25,10 @@
 #ifndef PROTOCOL_H
 #define PROTOCOL_H
 
+#include "bmp085.h"
+
 #define CALLSIGN        "BUSEDS1"
 
-void build_communctions_frame(char* string, int string_size);
+void build_communctions_frame(char* string, int string_size, struct barometer *b);
 
 #endif /* PROTOCOL_H */
