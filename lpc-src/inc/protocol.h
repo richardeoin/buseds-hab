@@ -26,9 +26,14 @@
 #define PROTOCOL_H
 
 #include "bmp085.h"
+#include "gps.h"
+#include "imu.h"
 
 #define CALLSIGN        "BUSEDS1"
 
-void build_communctions_frame(char* string, int string_size, struct barometer *b);
+void build_communctions_frame(char* string, int string_size, struct gps_time* gt,
+			      struct barometer* b, struct gps_data* gd,
+			      double altitude, double temperature,
+			      struct imu_raw* ir, int cutdown);
 
 #endif /* PROTOCOL_H */

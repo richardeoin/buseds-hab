@@ -33,6 +33,12 @@ struct gps_data {
   float altitude;
   int satellites;
 };
+/**
+ * GPS time structure
+ */
+struct gps_time {
+  int hours, minutes, seconds;
+};
 
 int process_gps_frame(char* frame);
 
