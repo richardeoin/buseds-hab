@@ -63,6 +63,8 @@ int main (void) {
 
     double a = pressure_to_altitude(b->pressure);
 
+    (void)a;
+
     for (int i = 0; i < 1000*100; i++);
     GREEN_TOGGLE();
   }

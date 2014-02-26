@@ -1,5 +1,7 @@
 SOURCES += src/i2c.c \
 src/spi.c \
+src/sd.c \
+src/sd_spi.c \
 src/tmp102.c \
 src/rtty.c \
 src/main.c \
