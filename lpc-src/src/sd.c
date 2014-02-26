@@ -114,6 +114,7 @@
  */
 
 #include "LPC11xx.h"
+#include "sd.h"
 #include "sd_spi.h"
 
 #define SD_COMMAND_TIMEOUT 5000
@@ -206,7 +207,7 @@ int initialise_card_v1(void) {
 }
 
 int initialise_card_v2(void) {
-  uint32_t i, t;
+  uint32_t i; //, t;
 
   for (i = 0; i < SD_COMMAND_TIMEOUT; i++) {
     /* Wait 50 ms @ 100MHz */
@@ -227,6 +228,7 @@ int initialise_card_v2(void) {
 
 int disk_initialize(void) {
   int i = initialise_card();
+  (void)i;
   _sectors = _sd_sectors();
 
   /* Set block length to 512 (CMD16) */
@@ -479,6 +481,9 @@ static uint32_t ext_bits(unsigned char *data, int msb, int lsb) {
  * Prints details about the size of the card.
  */
 static void print_card(uint32_t c_size, uint64_t capacity, uint64_t sectors) {
+  (void)c_size; // UNUSED
+  (void)capacity;
+  (void)sectors;
 
   //uint32_t* capacity_ptr = (uint32_t*)&capacity;
   //uint32_t* sectors_ptr = (uint32_t*)&sectors;
@@ -525,18 +530,20 @@ uint64_t _sd_sectors() {
       blocknr = (c_size + 1) * mult;
       capacity = blocknr * block_len;
       blocks = capacity / 512;
-      debug_puts("SD Card"); print_card(c_size, capacity, blocks);
+      // debug_puts("SD Card");
+      print_card(c_size, capacity, blocks);
       break;
 
     case 1:
       cdv = 1;
       hc_c_size = ext_bits(csd, 63, 48);
       blocks = (hc_c_size+1)*1024;
-      debug_puts("SDHC Card"); print_card(hc_c_size, blocks*512, blocks);
+      // debug_puts("SDHC Card");
+      print_card(hc_c_size, blocks*512, blocks);
       break;
 
     default:
-      debug_puts("CSD struct unsupported");
+      // debug_puts("CSD struct unsupported");
       return 0;
   };
   return blocks;

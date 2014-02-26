@@ -1,5 +1,5 @@
 /*
- * Reads data frames from the SPI1 module.
+ * Transfers data on the SPI0 port
  * Copyright (C) 2013  Richard Meadows
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -26,6 +26,12 @@
 #define SPI_H
 
 #define FIFOSIZE 8
+
+/* SSEL: P0[2], Active Low */
+#define SD_SPI_ENABLE()    do { LPC_GPIO0->DIR |= (1<<2); \
+    LPC_GPIO0->MASKED_ACCESS[1<<2] = 0; } while (0)
+#define SD_SPI_DISABLE()   do { LPC_GPIO0->DIR |= (1<<2); \
+    LPC_GPIO0->MASKED_ACCESS[1<<2] = (1<<2); } while (0)
 
 /**
  * SSP Status register

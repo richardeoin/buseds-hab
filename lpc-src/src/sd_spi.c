@@ -1,5 +1,5 @@
 /*
- * Reads data frames from the SPI1 module.
+ * Transfers data on the SPI0 port
  * Copyright (C) 2013  Richard Meadows
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -25,7 +25,7 @@
 #include "LPC11xx.h"
 #include "sd_spi.h"
 
-uint8_t sd_spi__xfer(uint8_t data) {
+uint8_t sd_spi_xfer(uint8_t data) {
   LPC_SPI0->DR = data;
 
   /* Wait until the Busy bit is cleared */
@@ -33,7 +33,7 @@ uint8_t sd_spi__xfer(uint8_t data) {
 
   return LPC_SPI0->DR;
 }
-void sd_spi__flush(void) {
+void sd_spi_flush(void) {
   uint8_t i, Dummy=Dummy;
   for (i = 0; i < FIFOSIZE; i++) {
     Dummy = LPC_SPI0->DR;		/* Clear the RxFIFO */
@@ -42,7 +42,7 @@ void sd_spi__flush(void) {
 /**
  * Sets the SPI frequency.
  */
-void sd_spi__frequency(uint32_t frequency) {
+void sd_spi_frequency(uint32_t frequency) {
   uint32_t div = SystemCoreClock / frequency;
 
   if (div >= 2) {
@@ -53,7 +53,7 @@ void sd_spi__frequency(uint32_t frequency) {
 /**
  * Initialisation
  */
-void sd_spi__init(void) {
+void sd_spi_init(void) {
   /* De-assert reset for the SSP1 peripheral */
   LPC_SYSCON->PRESETCTRL |= (1 << 2);
 
