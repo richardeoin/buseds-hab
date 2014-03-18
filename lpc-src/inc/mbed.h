@@ -28,12 +28,12 @@
 #include "LPC11xx.h"
 
 /**
- * Power Control on P1[9]. Active Low
+ * Power Control on P1[9]. Active High (The pin is !Shutdown!)
  */
 
 #define MBED_ON()	do { LPC_GPIO1->DIR |= (1<<9); \
-    LPC_GPIO1->MASKED_ACCESS[1<<9] = (0<<9); } while (0);
-#define HEATER_OFF()	do { LPC_GPIO1->DIR |= (1<<9); \
     LPC_GPIO1->MASKED_ACCESS[1<<9] = (1<<9); } while (0);
+#define MBED_OFF()	do { LPC_GPIO1->DIR |= (1<<9); \
+    LPC_GPIO1->MASKED_ACCESS[1<<9] = (0<<9); } while (0);
 
 #endif /* MBED_H */
