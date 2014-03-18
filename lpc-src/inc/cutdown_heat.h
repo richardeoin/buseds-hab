@@ -28,18 +28,20 @@
 #include "LPC11xx.h"
 
 /**
- * Cutdown on P2[5]
- * Heater on P2[4]
+ * Cutdown on P3[5]
+ * Heater on P3[4]
+ *
+ *  *** NOTE WRONG TEXT ON LPCXPRESSO SILK ***
  */
 
-#define CUTDOWN_ON()	do { LPC_GPIO2->DIR |= (1<<5); \
-    LPC_GPIO2->MASKED_ACCESS[1<<5] = (1<<5); } while (0);
-#define CUTDOWN_OFF()	do { LPC_GPIO2->DIR |= (1<<5); \
-    LPC_GPIO2->MASKED_ACCESS[1<<5] = (0<<5); } while (0);
+#define CUTDOWN_ON()	do { LPC_GPIO3->DIR |= (1<<5); \
+    LPC_GPIO3->MASKED_ACCESS[1<<5] = (1<<5); } while (0);
+#define CUTDOWN_OFF()	do { LPC_GPIO3->DIR |= (1<<5); \
+    LPC_GPIO3->MASKED_ACCESS[1<<5] = (0<<5); } while (0);
 
-#define HEATER_ON()	do { LPC_GPIO2->DIR |= (1<<4); \
-    LPC_GPIO2->MASKED_ACCESS[1<<4] = (1<<4); } while (0);
-#define HEATER_OFF()	do { LPC_GPIO2->DIR |= (1<<4); \
-    LPC_GPIO2->MASKED_ACCESS[1<<4] = (0<<4); } while (0);
+#define HEATER_ON()	do { LPC_GPIO3->DIR |= (1<<4); \
+    LPC_GPIO3->MASKED_ACCESS[1<<4] = (1<<4); } while (0);
+#define HEATER_OFF()	do { LPC_GPIO3->DIR |= (1<<4); \
+    LPC_GPIO3->MASKED_ACCESS[1<<4] = (0<<4); } while (0);
 
 #endif /* CUTDOWN_HEAT_H */
