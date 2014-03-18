@@ -316,21 +316,27 @@ void i2c_init(void) {
  **
  ** parameters:		None
  ** Returned value:	Any of the I2CSTATE_... values. See i2c.h
- ** 
+ **
  *****************************************************************************/
 uint32_t i2c_engine(void) {
   I2CMasterState = I2CSTATE_IDLE;
   RdIndex = 0;
   WrIndex = 0;
+  uint32_t timeout = 100*1000;
+
   if (!i2c_start()) {
     i2c_stop();
     return 0;;
   }
 
   /* wait until the state is a terminal state */
-  while (I2CMasterState < 0x100);
+  while (I2CMasterState < 0x100 && timeout--);
 
-  return I2CMasterState;
+  if (timeout > 0) { // We didn't timeout
+    return I2CMasterState;
+  } else {
+    return 1;
+  }
 }
 
 /******************************************************************************
