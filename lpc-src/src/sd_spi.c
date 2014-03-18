@@ -54,28 +54,28 @@ void sd_spi_frequency(uint32_t frequency) {
  * Initialisation
  */
 void sd_spi_init(void) {
-  /* De-assert reset for the SSP1 peripheral */
-  LPC_SYSCON->PRESETCTRL |= (1 << 2);
+  /* De-assert reset for the SSP0 peripheral */
+  LPC_SYSCON->PRESETCTRL |= (1 << 0);
 
   /* Enable the clock to the module */
-  LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 18);
-  LPC_SYSCON->SSP1CLKDIV = 0x01; /* Full clock to the module */
+  LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 11);
+  LPC_SYSCON->SSP0CLKDIV = 0x01; /* Full clock to the module */
 
   /*  SSP I/O configuration */
-  LPC_IOCON->PIO2_2 &= ~0x07;		/* Leave the pull-ups on */
-  LPC_IOCON->PIO2_2 |= 0x02;		/* SSP MISO */
-  LPC_IOCON->PIO2_3 &= ~0x07;		/* SSP MOSI */
-  LPC_IOCON->PIO2_3 |= 0x02;
-  LPC_IOCON->PIO2_1 &= ~0x07;		/* SSP CLK */
-  LPC_IOCON->PIO2_1 |= 0x02;
-  LPC_IOCON->PIO2_0 &= ~0x07;		/* SSP SSEL */
-  LPC_IOCON->PIO2_0 |= 0x02;
+  LPC_IOCON->PIO0_8 &= ~0x07;		/* Leave the pull-ups on */
+  LPC_IOCON->PIO0_8 |= 0x01;		/* SSP MISO */
+  LPC_IOCON->PIO0_9 &= ~0x07;		/* SSP MOSI */
+  LPC_IOCON->PIO0_9 |= 0x01;
+
+  LPC_IOCON->SCK_LOC = 0x1;		/* CLK on P2[11] */
+  LPC_IOCON->PIO2_11 &= ~0x07;		/* SSP CLK */
+  LPC_IOCON->PIO2_11 |= 0x01;
 
   /* Set DSS data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 0, and SCR is 2 */
   LPC_SPI0->CR0 = 0x0007;
 
   /* Initially 100kHz */
-  spi_frequency(100*1000);
+  sd_spi_frequency(100*1000);
 
   /* Master SSP Enabled */
   LPC_SPI0->CR1 = SSPCR1_SSE;

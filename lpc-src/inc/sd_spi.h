@@ -22,8 +22,8 @@
  * WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef SPI_H
-#define SPI_H
+#ifndef SD_SPI_H
+#define SD_SPI_H
 
 #define FIFOSIZE 8
 
@@ -84,8 +84,8 @@
 #define SSPICR_RORIC    (0x1<<0)
 #define SSPICR_RTIC     (0x1<<1)
 
-uint8_t spi_xfer(uint8_t data);
-void spi_init(void);
-void spi_frequency(uint32_t frequency);
+uint8_t sd_spi_xfer(uint8_t data);
+void sd_spi_init(void);
+void sd_spi_frequency(uint32_t frequency);
 
-#endif /* SPI_H */
+#endif /* SD_SPI_H */

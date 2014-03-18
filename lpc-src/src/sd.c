@@ -161,14 +161,14 @@ int initialise_card(void) {
   uint8_t i;
 
   /* Set to 100kHz for initialisation, and clock card with cs = 1 */
-  spi_frequency(100000);
+  sd_spi_frequency(100000);
   SD_SPI_DISABLE();
 
   for (i = 0; i < 16; i++) {
     /* Write times are improved by having this set to 0xFF rather than 0xAA.
      * Maybe this has some kind of effect on the internal SD operating frequency?
      */
-    spi_xfer(0xFF);
+    sd_spi_xfer(0xFF);
   }
 
   /* Send CMD0, should return with all zeros except IDLE STATE set (bit 0) */
@@ -207,11 +207,11 @@ int initialise_card_v1(void) {
 }
 
 int initialise_card_v2(void) {
-  uint32_t i; //, t;
+  uint32_t i, t;
 
   for (i = 0; i < SD_COMMAND_TIMEOUT; i++) {
     /* Wait 50 ms @ 100MHz */
-//    for (t = 0; t < 1000*1000; t++) { } /* Assume this loop takes 5 instruction cycles */
+    for (t = 0; t < 1000*1000; t++) { } /* Assume this loop takes 5 instruction cycles */
 
     _cmd58();
     _cmd(55, 0);
@@ -236,7 +236,7 @@ int disk_initialize(void) {
     return 1;
   }
 
-  spi_frequency(1000000); /* Set to 1MHz for data transfer. */
+  sd_spi_frequency(1000000); /* Set to 1MHz for data transfer. */
   return 0;
 }
 
@@ -292,24 +292,24 @@ int _cmd(int cmd, int arg) {
   SD_SPI_ENABLE();
 
   /* Send a command */
-  spi_xfer(0x40 | cmd);
-  spi_xfer(arg >> 24);
-  spi_xfer(arg >> 16);
-  spi_xfer(arg >> 8);
-  spi_xfer(arg >> 0);
-  spi_xfer(0x95);
+  sd_spi_xfer(0x40 | cmd);
+  sd_spi_xfer(arg >> 24);
+  sd_spi_xfer(arg >> 16);
+  sd_spi_xfer(arg >> 8);
+  sd_spi_xfer(arg >> 0);
+  sd_spi_xfer(0x95);
 
   /* Wait for the response (response[7] == 0) */
   for (i = 0; i < SD_COMMAND_TIMEOUT; i++) {
-    int response = spi_xfer(0xFF);
+    int response = sd_spi_xfer(0xFF);
     if (!(response & 0x80)) {
       SD_SPI_DISABLE();
-      spi_xfer(0xFF);
+      sd_spi_xfer(0xFF);
       return response;
     }
   }
   SD_SPI_DISABLE();
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
   return -1; /* Timeout */
 }
 int _cmdx(int cmd, int arg) {
@@ -318,22 +318,22 @@ int _cmdx(int cmd, int arg) {
   SD_SPI_ENABLE();
 
   /* Send a command */
-  spi_xfer(0x40 | cmd);
-  spi_xfer(arg >> 24);
-  spi_xfer(arg >> 16);
-  spi_xfer(arg >> 8);
-  spi_xfer(arg >> 0);
-  spi_xfer(0x95);
+  sd_spi_xfer(0x40 | cmd);
+  sd_spi_xfer(arg >> 24);
+  sd_spi_xfer(arg >> 16);
+  sd_spi_xfer(arg >> 8);
+  sd_spi_xfer(arg >> 0);
+  sd_spi_xfer(0x95);
 
   /* Wait for the response (response[7] == 0) */
   for (i = 0; i < SD_COMMAND_TIMEOUT; i++) {
-    int response = spi_xfer(0xFF);
+    int response = sd_spi_xfer(0xFF);
     if (!(response & 0x80)) {
       return response;
     }
   }
   SD_SPI_DISABLE();
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
   return -1; /* Timeout */
 }
 
@@ -345,28 +345,28 @@ int _cmd58(void) {
   SD_SPI_ENABLE();
 
   /* Send a command */
-  spi_xfer(0x40 | 58);
-  spi_xfer(arg >> 24);
-  spi_xfer(arg >> 16);
-  spi_xfer(arg >> 8);
-  spi_xfer(arg >> 0);
-  spi_xfer(0x95);
+  sd_spi_xfer(0x40 | 58);
+  sd_spi_xfer(arg >> 24);
+  sd_spi_xfer(arg >> 16);
+  sd_spi_xfer(arg >> 8);
+  sd_spi_xfer(arg >> 0);
+  sd_spi_xfer(0x95);
 
   /* Wait for the response (response[7] == 0) */
   for (i = 0; i < SD_COMMAND_TIMEOUT; i++) {
-    int response = spi_xfer(0xFF);
+    int response = sd_spi_xfer(0xFF);
     if (!(response & 0x80)) {
-      int ocr = spi_xfer(0xFF) << 24;
-      ocr |= spi_xfer(0xFF) << 16;
-      ocr |= spi_xfer(0xFF) << 8;
-      ocr |= spi_xfer(0xFF) << 0;
+      int ocr = sd_spi_xfer(0xFF) << 24;
+      ocr |= sd_spi_xfer(0xFF) << 16;
+      ocr |= sd_spi_xfer(0xFF) << 8;
+      ocr |= sd_spi_xfer(0xFF) << 0;
       SD_SPI_DISABLE();
-      spi_xfer(0xFF);
+      sd_spi_xfer(0xFF);
       return response;
     }
   }
   SD_SPI_DISABLE();
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
   return -1; /* Timeout */
 }
 
@@ -377,28 +377,28 @@ int _cmd8(void) {
   SD_SPI_ENABLE();
 
   /* Send a command */
-  spi_xfer(0x40 | 8); /* CMD8 */
-  spi_xfer(0x00);     /* Reserved */
-  spi_xfer(0x00);     /* Reserved */
-  spi_xfer(0x01);     /* 3.3v */
-  spi_xfer(0xAA);     /* Check pattern */
-  spi_xfer(0x87);     /* CRC */
+  sd_spi_xfer(0x40 | 8); /* CMD8 */
+  sd_spi_xfer(0x00);     /* Reserved */
+  sd_spi_xfer(0x00);     /* Reserved */
+  sd_spi_xfer(0x01);     /* 3.3v */
+  sd_spi_xfer(0xAA);     /* Check pattern */
+  sd_spi_xfer(0x87);     /* CRC */
 
   /* Wait for the response (response[7] == 0) */
   for (i = 0; i < SD_COMMAND_TIMEOUT * 1000; i++) {
     char response[5];
-    response[0] = spi_xfer(0xFF);
+    response[0] = sd_spi_xfer(0xFF);
     if (!(response[0] & 0x80)) {
       for (j = 1; j < 5; j++) {
-	response[i] = spi_xfer(0xFF);
+	response[i] = sd_spi_xfer(0xFF);
       }
       SD_SPI_DISABLE();
-      spi_xfer(0xFF);
+      sd_spi_xfer(0xFF);
       return response[0];
     }
   }
   SD_SPI_DISABLE();
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
   return -1; /* Timeout */
 }
 
@@ -408,20 +408,20 @@ int _block_read(uint8_t *buffer, uint32_t length) {
   SD_SPI_ENABLE();
 
   /* Read until start byte (0xFF) */
-  while (spi_xfer(0xFF) != 0xFE);
+  while (sd_spi_xfer(0xFF) != 0xFE);
 
   /* Read a full 512-octet block */
   for (i = 0; i < length; i++) {
-    buffer[i] = spi_xfer(0xFF);
+    buffer[i] = sd_spi_xfer(0xFF);
   }
   for (i = length; i < 512; i++) {
-    Dummy = spi_xfer(0xFF);
+    Dummy = sd_spi_xfer(0xFF);
   }
-  spi_xfer(0xFF); /* checksum */
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF); /* checksum */
+  sd_spi_xfer(0xFF);
 
   SD_SPI_DISABLE();
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
   return 0;
 }
 
@@ -431,35 +431,35 @@ int _block_write(const uint8_t* buffer, uint32_t length) {
   SD_SPI_ENABLE();
 
   /* Indicate start of block */
-  spi_xfer(0xFE);
+  sd_spi_xfer(0xFE);
 
   /* Write a full 512-octet block */
   for (i = 0; i < length; i++) {
-    spi_xfer(buffer[i]);
+    sd_spi_xfer(buffer[i]);
   }
   for (i = length; i < 512; i++) {
-    spi_xfer(0xFF);
+    sd_spi_xfer(0xFF);
   }
 
   /* Write the checksum */
-  spi_xfer(0xFF);
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
 
   /* Check the response token */
-  if ((spi_xfer(0xFF) & 0x1F) != 0x05) {
+  if ((sd_spi_xfer(0xFF) & 0x1F) != 0x05) {
     SD_SPI_DISABLE();
-    spi_xfer(0xFF);
+    sd_spi_xfer(0xFF);
     return 1;
   }
 
   /* Wait for write to finish */
   i = 0;
-  while (spi_xfer(0xFF) == 0) {
+  while (sd_spi_xfer(0xFF) == 0) {
     i++;
   }
 
   SD_SPI_DISABLE();
-  spi_xfer(0xFF);
+  sd_spi_xfer(0xFF);
   return 0;
 }
 
