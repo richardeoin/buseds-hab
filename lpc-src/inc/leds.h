@@ -32,11 +32,15 @@
  * Green on P1[4]
  */
 
-#define YELLOW_ON()	do { LPC_IOCON->SWDIO_PIO1_3 |= 0x1; \
+/**
+ * We don't use Yellow any more because it interferes with one of the SW lines.
+ */
+/* #define YELLOW_ON()	do { LPC_IOCON->SWDIO_PIO1_3 |= 0x1;		\
     LPC_GPIO1->DIR |= (1<<3); LPC_GPIO1->MASKED_ACCESS[1<<3] = (1<<3); } while (0);
 #define YELLOW_OFF()	LPC_GPIO1->MASKED_ACCESS[1<<3] = 0;
 #define YELLOW_TOGGLE()	do { if (LPC_GPIO1->MASKED_ACCESS[1<<3]) { \
       YELLOW_OFF(); } else { YELLOW_ON(); } } while (0);
+*/
 
 #define GREEN_ON()	do { LPC_GPIO1->DIR |= (1<<4); \
     LPC_GPIO1->MASKED_ACCESS[1<<4] = (1<<4); } while (0);
