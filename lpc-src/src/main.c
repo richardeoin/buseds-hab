@@ -31,21 +31,41 @@
 #include "leds.h"
 #include "bmp085.h"
 #include "altitude.h"
+#include "cutdown_heat.h"
+#include "mbed.h"
+#include "sd.h"
+#include "sd_spi.h"
 
 #define RTTY_BAUD       50
 
 int main (void) {
   SystemInit();
 
+  /* Initialise Pins */
+  CUTDOWN_OFF();
+  HEATER_OFF();
+  MBED_OFF();
+  GREEN_OFF();
+
   /* Update the value of SystemCoreClock */
   SystemCoreClockUpdate();
 
+  CUTDOWN_ON();
+
+  CUTDOWN_OFF();
+
+  while (1);
+
   /* Initialise Interfaces */
   i2c_init();
-  spi_init(process_imu_frame);
+  spi_init(process_imu_frame); // IMU
+  sd_spi_init(); // SD
 
   /* Initialise Sensors */
   init_barometer();
+
+  /* SD Card */
+  initialise_card();
 
   GREEN_ON();
 
@@ -56,7 +76,8 @@ int main (void) {
   struct imu_raw ir;
 
   while (1) {
-    rtty_set_string("M0SBU TEST TEST", 15);
+    // Wait and set this immediately
+    while (rtty_set_string("M0SBU TEST TEST", 15));
 
     b = get_barometer();
     get_imu_raw_data(&ir);
@@ -65,7 +86,6 @@ int main (void) {
 
     (void)a;
 
-    for (int i = 0; i < 1000*100; i++);
     GREEN_TOGGLE();
   }
 }
