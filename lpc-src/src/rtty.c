@@ -1,7 +1,7 @@
-/* 
+/*
  * Bit-bangs RTTY
  * Copyright (C) 2013  richard
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -9,10 +9,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -23,6 +23,7 @@
  */
 
 #include "LPC11xx.h"
+#include <string.h>
 
 /**
  * Interface to the physical world on P0[7] (Also red LED)
@@ -54,6 +55,11 @@
 #define BITS_PER_CHAR	11
 
 /**
+ * Output String
+ */
+#define RTTY_STRING_MAX	0x200
+
+/**
  * Where we currently are in the rtty output byte
  *
  * 0 = Start Bit
@@ -70,7 +76,7 @@ uint32_t rtty_index;
 /**
  * Details of the string that is currently being output
  */
-char* rtty_string;
+char rtty_string[RTTY_STRING_MAX];
 uint32_t rtty_string_length = 0;
 
 /**
@@ -83,12 +89,15 @@ int rtty_active(void) {
 /**
  * Sets an output string.
  *
- * Returns 0 on success, 1 if a string is already active.
+ * Returns 0 on success, 1 if a string is already active or 2 if the
+ * specified string was too long.
  */
 int rtty_set_string(char* string, uint32_t length) {
+  if (length > RTTY_STRING_MAX) return 2; // To long
+
   if (!rtty_active()) {
     // Copy
-    rtty_string = string;
+    memcpy(rtty_string, string, length);
     rtty_string_length = length;
     // Initialise
     rtty_index = 0;
