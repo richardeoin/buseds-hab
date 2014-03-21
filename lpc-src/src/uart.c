@@ -26,7 +26,8 @@
 #include <string.h>
 #include "uart.h"
 
-#define START_CODE	$
+#define START_CODE		'$'
+#define RX_FIFO_TRIGGER_LEVEL	14
 
 int in_index;
 
@@ -52,7 +53,7 @@ void rx_read(uint8_t number) {
  * UART interrupt.
  */
 extern void UART_IRQHandler(void) {
-  uint8_t i, Dummy=Dummy, iir;
+  uint8_t Dummy=Dummy, iir;
 
   /* While interrupt pending */
   while (!((iir = LPC_UART->IIR) & 1)) {
@@ -92,10 +93,10 @@ void uart_init(int SystemCoreClock) {
 
   /* Baud Rate = (SysCClk) / (16*PCLK_DIV*1.625) = 250000 / 16*1.625*/
   /* 1.625 (DivAddVal = 5, MulVal = 8) */
-  int PLCK_DIV = SystemCoreClock / 250000;
+  int pclk_div = SystemCoreClock / 250000;
   /* Load the Divisor Latches */
-  LPC_UART->DLL = PCLK_DIV & 0xFF;
-  LPC_UART->DLM = PCLK_DIV >> 8;
+  LPC_UART->DLL = pclk_div & 0xFF;
+  LPC_UART->DLM = pclk_div >> 8;
   /* Load the fractional divider */
   LPC_UART->FDR = (8 << 4) | (5 << 0);
 

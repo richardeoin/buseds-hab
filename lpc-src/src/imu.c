@@ -27,7 +27,7 @@
 #include "stdio.h"
 #include "imu.h"
 
-int access_flag = 0;
+int imu_access_flag = 0;
 
 struct imu_angle imu_angle;
 struct imu_raw imu_raw;
@@ -48,7 +48,7 @@ void process_imu_frame(uint8_t* data, uint16_t len) {
   int count;
   int roll_i, roll_f, pitch_i, pitch_f, yaw_i, yaw_f;
 
-  if (!access_flag) {		/* Check the flag isn't up */
+  if (!imu_access_flag) {		/* Check the flag isn't up */
 
     count = sscanf((char*)data,
 		   "!ANG:%d.%d,%d.%d,%d.%d,AN:%d,%d,%d,%d,%d,%d,%d,%d,%d",
@@ -67,7 +67,7 @@ void process_imu_frame(uint8_t* data, uint16_t len) {
 }
 
 void get_imu_raw_data(struct imu_raw* data) {
-  access_flag = 1;		/* Raise the flag */
+  imu_access_flag = 1;		/* Raise the flag */
   memcpy(data, (void*)&imu_raw, sizeof(struct imu_raw));
-  access_flag = 0;		/* Clear the flag */
+  imu_access_flag = 0;		/* Clear the flag */
 }
