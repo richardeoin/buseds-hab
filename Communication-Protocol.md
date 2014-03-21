@@ -1,12 +1,8 @@
 ## Communication Protocol for the Payload
 
-### Callsign
+* *Callsign* BUSEDS1
 
-BUSEDS1
-
-### Sentence ID (Increments)
-
-1
+* *Sentence ID (Increments)* 1
 
 ### Time of Day (from GPS)
 
