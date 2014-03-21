@@ -4,27 +4,41 @@
 
 BUSEDS1
 
-### Sentence ID
+### Sentence ID (Increments)
 
-Directly increments? Or seconds / milliseconds from power on?
+1
 
-### Time (from GPS) (Just time of day)
+### Time of Day (from GPS)
 
-### GPS Latitude
+12:14:15
 
-### GPS Longitude
+### GPS Latitude (Decimal Degrees)
 
-### Altitude
+51.234532
 
-From GPS or derived from barometer pressure?
+### GPS Longitude (Decimal Degrees)
 
-Both
+-2.593403
+
+### GPS Altitude (Meters)
+
+59
 
 ### GPS Satillites in View
 
-### Temperature (Internal, from Barometer)
+7
 
-### Temperature (External, from TMP102 by wire)
+### Barometric Altitude (Meters)
+
+20
+
+### External Temperature (from TMP102)
+
+18
+
+### Internal Temperature (from Barometer)
+
+22
 
 ### Acceleration X
 
@@ -34,7 +48,7 @@ Both
 
 ### Cutdown State
 
-Just a binary value
+1
 
 ### Checksum
 
