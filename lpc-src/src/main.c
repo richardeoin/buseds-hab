@@ -35,6 +35,7 @@
 #include "mbed.h"
 #include "sd.h"
 #include "sd_spi.h"
+#include "wdt.h"
 
 #define RTTY_BAUD       50
 
@@ -49,12 +50,6 @@ int main (void) {
 
   /* Update the value of SystemCoreClock */
   SystemCoreClockUpdate();
-
-  CUTDOWN_ON();
-
-  CUTDOWN_OFF();
-
-  while (1);
 
   /* Initialise Interfaces */
   i2c_init();
@@ -72,6 +67,9 @@ int main (void) {
   /* Configure the SysTick */
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
+  /* Watchdog - Disabled for debugging */
+  //init_watchdog();
+
   struct barometer* b;
   struct imu_raw ir;
 
@@ -87,6 +85,8 @@ int main (void) {
     (void)a;
 
     GREEN_TOGGLE();
+
+    feed_watchdog();
   }
 }
 
