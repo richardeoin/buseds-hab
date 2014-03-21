@@ -77,19 +77,19 @@ uint16_t crc_checksum(char *string)
  * Builds a communctions frame compliant with the protocol described
  * at http://ukhas.org.uk/communication:protocol
  */
-void build_communctions_frame(char* string, int string_size, struct gps_time* gt,
+int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
 			      struct barometer* b, struct gps_data* gd,
-			      double altitude, double temperature,
+			      double b_altitude, double temperature,
 			      struct imu_raw* ir, int cutdown)
 {
   int print_size;
 
   print_size = snprintf(string, string_size,
-			"$$%s,%d,%02d:%02d:%02d,%.6f,%.6f,%.1f,%d,%.1f,%.1f,%.1f,%d,%d,%d,%d",
+			"$$%s,%d,%02d:%02d:%02d,%.6f,%.6f,%d,%d,%.1f,%.1f,%.1f,%d,%d,%d,%d",
 			CALLSIGN, sentence_id++,
 			gt->hours, gt->minutes, gt->seconds, /* Time */
 			gd->lat, gd->lon, gd->altitude, gd->satellites,/* GPS */
-			altitude, temperature, b->temperature, /* TMP/BMP */
+			b_altitude, temperature, b->temperature, /* TMP/BMP */
 			ir->accel.x, ir->accel.y, ir->accel.z,/* Acceleration */
 			cutdown); /* Cutdown State */
 
@@ -100,8 +100,12 @@ void build_communctions_frame(char* string, int string_size, struct gps_time* gt
 #endif
   } else {                      /* Add checksum */
     /* Star + 4 Hex + \n + \0 */
-    sprintf(string + print_size, "*%04X\n", crc_checksum(string));
+    print_size += sprintf(string + print_size, "*%04X\n", crc_checksum(string));
+
+    return print_size + 1; // +1 for null terminator
   }
+
+  return 0;
 }
 
 #ifdef PROTOCOL_TEST

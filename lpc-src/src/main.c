@@ -36,8 +36,22 @@
 #include "sd.h"
 #include "sd_spi.h"
 #include "wdt.h"
+#include "gps.h"
+#include "uart.h"
+#include "protocol.h"
 
-#define RTTY_BAUD       50
+/**
+ * RTTY Baud Clock.
+ */
+#define RTTY_BAUD       	50
+/**
+ * The mBed is powered on below the given barometric altitude
+ */
+#define GSM_ON_BELOW_ALTITUDE	1000
+/**
+ * The maximu length of a single transmitter string
+ */
+#define TX_STRING_LENGTH	0x200
 
 int sd_good = 0;
 
@@ -57,6 +71,7 @@ int main (void) {
   i2c_init();
   spi_init(process_imu_frame); // IMU
   sd_spi_init(); // SD
+  uart_init(); // GPS
 
   /* Initialise Sensors */
   init_barometer();
@@ -70,11 +85,9 @@ int main (void) {
 
   GREEN_ON();
 
-  disk_write("Hello World\0", 12, 0);
-
-  uint8_t buff[512];
-
-  disk_read(&buff, 12, 0);
+  // disk_write("Hello World\0", 12, 0);
+  // uint8_t buff[512];
+  // disk_read(&buff, 12, 0);
 
   /* Configure the SysTick */
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
@@ -84,20 +97,46 @@ int main (void) {
 
   struct barometer* b;
   struct imu_raw ir;
+  struct gps_data gd;
+  struct gps_time gt;
+  double alt, ext_temp;
+  int tx_length; // The length of the built tx string
+
+  char tx_string[TX_STRING_LENGTH];
 
   while (1) {
-    // Wait and set this immediately
-    while (rtty_set_string("M0SBU TEST TEST", 15));
 
+    /* Grab Data */
     b = get_barometer();
     get_imu_raw_data(&ir);
+    get_gps_data(&gd);
+    get_gps_time(&gt);
+    ext_temp = get_temperature();
 
-    double a = pressure_to_altitude(b->pressure);
+    /* Data Processing */
+    alt = pressure_to_altitude(b->pressure);
 
-    (void)a;
+    /* Act on the data */
+    if (alt < GSM_ON_BELOW_ALTITUDE) {
+      MBED_ON();
+    } else {
+      MBED_OFF();
+    }
 
+    /* Create a protocol string */
+    tx_length = build_communctions_frame(tx_string, TX_STRING_LENGTH,
+			     &gt, b, &gd, alt, ext_temp, &ir, 0);
+
+    /* Transmit - Quietly fails if another transmission is ongoing */
+    rtty_set_string(tx_string, tx_length);
+
+    /* Store */
+    if (sd_good) {
+
+    }
+
+    /* Housekeeping */
     GREEN_TOGGLE();
-
     feed_watchdog();
   }
 }
