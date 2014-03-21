@@ -1,13 +1,8 @@
 ## Communication Protocol for the Payload
 
-* _Callsign_
-* BUSEDS1
-* _Sentence ID (Increments)_
-* 1
-
-### Time of Day (from GPS)
-
-12:14:15
+* **Callsign**                     BUSEDS1
+* **Sentence ID (Increments)**     1
+* **Time of Day (from GPS)**       12:14:15
 
 ### GPS Latitude (Decimal Degrees)
 
