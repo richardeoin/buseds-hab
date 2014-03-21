@@ -27,10 +27,6 @@
 
 #include "LPC11xx.h"
 
-#define MAX_NMEA_FRAME_SIZE	0x200
-
-uint8_t nmea_frame[MAX_NMEA_FRAME_SIZE];
-
-
+void uart_init(void);
 
 #endif /* UART_H */

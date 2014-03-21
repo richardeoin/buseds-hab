@@ -25,6 +25,15 @@
 #include "LPC11xx.h"
 #include <string.h>
 #include "uart.h"
+#include "gps.h"
+
+/**
+ * Recevies NMEA frames on P1[6] at 4800 baud.
+ */
+
+#define MAX_NMEA_FRAME_SIZE	0x200
+
+char nmea_frame[MAX_NMEA_FRAME_SIZE];
 
 #define START_CODE		'$'
 #define RX_FIFO_TRIGGER_LEVEL	14
@@ -41,10 +50,22 @@ void rx_read(uint8_t number) {
     data = LPC_UART->RBR;
 
     if (data == START_CODE) {
+
+
+      /* Start a new frame */
       in_index = 0;
-    } else if (in_index < MAX_NMEA_FRAME_SIZE && in_index >= 0) { /* Just data */
-      nmea_frame[in_index] = LPC_UART->RBR;
+      nmea_frame[in_index] = data;
       in_index++;
+
+    } else if (in_index < MAX_NMEA_FRAME_SIZE && in_index >= 0) {
+      /* Add a character to the current frame */
+      nmea_frame[in_index] = data;
+      in_index++;
+
+      if (data == '*') {
+	process_gps_frame(nmea_frame);
+	in_index = -1;
+      }
     }
   }
 }
@@ -77,28 +98,34 @@ extern void UART_IRQHandler(void) {
 
 /**
  * Initialises the UART at 9600 baud. The system core clock must be a
- * multiple of 250kHz.
+ * multiple of 125kHz.
  */
-void uart_init(int SystemCoreClock) {
+void uart_init(void) {
+
+  /* Configure Pins */
+  LPC_IOCON->PIO1_6 &= ~0x7;
+  LPC_IOCON->PIO1_6 |= 0x1;
+  LPC_IOCON->PIO1_7 &= ~0x7;
+  LPC_IOCON->PIO1_7 |= 0x1;
+
   LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 12);
   LPC_SYSCON->UARTCLKDIV = 1; /* Use the main clock for the UART */
 
-  /* Configure Pins */
-  LPC_IOCON->PIO1_6 |= 0x1;
-  LPC_IOCON->PIO1_7 |= 0x1;
 
   /* Configure UART */
-  LPC_UART->LCR |= (1 << 7) | (3 << 0);	/* 8-bit words, 1 stop bit, DL access */
-  LPC_UART->FCR |= (3 << 6) | (7 << 0);	/* FIFO Enable+Reset, RX Trig 3 */
+  LPC_UART->LCR = 0x83;	/* 8-bit words, 1 stop bit, DL access */
 
-  /* Baud Rate = (SysCClk) / (16*PCLK_DIV*1.625) = 250000 / 16*1.625*/
+  /* Baud Rate = (SysCClk) / (16*PCLK_DIV*1.625) = 125000 / 16*1.625 = 4800 */
   /* 1.625 (DivAddVal = 5, MulVal = 8) */
-  int pclk_div = SystemCoreClock / 250000;
+  int pclk_div = SystemCoreClock / 125000;
   /* Load the Divisor Latches */
   LPC_UART->DLL = pclk_div & 0xFF;
   LPC_UART->DLM = pclk_div >> 8;
   /* Load the fractional divider */
   LPC_UART->FDR = (8 << 4) | (5 << 0);
+
+  LPC_UART->LCR = 0x3; /* DLAB = 0 */
+  LPC_UART->FCR |= (3 << 6) | (7 << 0);	/* FIFO Enable+Reset, RX Trig 3 */
 
   /* Configure Interrupts */
   LPC_UART->IER |= (1 << 2) | (1 << 0); /* Enable the RBR and RXL interrupts */

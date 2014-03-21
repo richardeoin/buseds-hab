@@ -30,12 +30,13 @@
 int access_flag = 0;
 
 struct gps_data gps_data;
+struct gps_time gps_time;
 
 /**
  * Processes a single NMEA GPS frame.
  */
 int process_gps_frame(char* frame) {
-  int hours, minutes, seconds, frac_seconds;
+  int frac_seconds;
   int lat_deg, lat_min, lat_frac_min;
   int long_deg, long_min, long_frac_min;
 
@@ -46,7 +47,8 @@ int process_gps_frame(char* frame) {
   /* Next field */
   frame = strchr(frame, ','); frame++;
   /* Time of day */
-  sscanf(frame, "%2d%2d%2d.%d", &hours, &minutes, &seconds, &frac_seconds);
+  sscanf(frame, "%2d%2d%2d.%d", &gps_time.hours, &gps_time.minutes,
+	 &gps_time.seconds, &frac_seconds);
 
   /* Next field */
   frame = strchr(frame, ','); frame++;
@@ -63,7 +65,7 @@ int process_gps_frame(char* frame) {
   /* Next field */
   frame = strchr(frame, ','); frame++;
   /* Longitude */
-  sscanf(frame, "%2d%3d.%d", &long_deg, &long_min, &long_frac_min);
+  sscanf(frame, "%3d%2d.%d", &long_deg, &long_min, &long_frac_min);
   gps_data.lon = long_deg;
   gps_data.lon += (float)long_min / 60;
   gps_data.lon += (float)long_frac_min / (60 * 10000);
@@ -88,7 +90,7 @@ int process_gps_frame(char* frame) {
   /* Next field */
   frame = strchr(frame, ','); frame++;
   /* Altitude */
-  sscanf(frame, "%f", &gps_data.altitude);
+  sscanf(frame, "%d", &gps_data.altitude);
 
   return 0;
 }
@@ -96,6 +98,11 @@ int process_gps_frame(char* frame) {
 void get_gps_data(struct gps_data* data) {
   access_flag = 1;		/* Raise the flag */
   memcpy(data, (void*)&gps_data, sizeof(struct gps_data));
+  access_flag = 0;		/* Clear the flag */
+}
+void get_gps_time(struct gps_time* time) {
+  access_flag = 1;		/* Raise the flag */
+  memcpy(time, (void*)&gps_time, sizeof(struct gps_time));
   access_flag = 0;		/* Clear the flag */
 }
 

@@ -30,8 +30,7 @@
  */
 struct gps_data {
   double lat, lon;
-  float altitude;
-  int satellites;
+  int altitude, satellites;
 };
 /**
  * GPS time structure
@@ -43,5 +42,6 @@ struct gps_time {
 int process_gps_frame(char* frame);
 
 void get_gps_data(struct gps_data* data);
+void get_gps_time(struct gps_time* time);
 
 #endif /* GPS_H */
