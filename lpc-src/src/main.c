@@ -39,6 +39,8 @@
 
 #define RTTY_BAUD       50
 
+int sd_good = 0;
+
 int main (void) {
   SystemInit();
 
@@ -60,9 +62,19 @@ int main (void) {
   init_barometer();
 
   /* SD Card */
-  initialise_card();
+  if (initialise_card()) { // Initialised to something
+    if (disk_initialize() == 0) { // Disk initialisation was successful
+      sd_good = 1;
+    }
+  }
 
   GREEN_ON();
+
+  disk_write("Hello World\0", 12, 0);
+
+  uint8_t buff[512];
+
+  disk_read(&buff, 12, 0);
 
   /* Configure the SysTick */
   SysTick_Config(SystemCoreClock / RTTY_BAUD);

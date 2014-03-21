@@ -210,8 +210,6 @@ int initialise_card_v2(void) {
   uint32_t i, t;
 
   for (i = 0; i < SD_COMMAND_TIMEOUT; i++) {
-    /* Wait 50 ms @ 100MHz */
-    for (t = 0; t < 1000*1000; t++) { } /* Assume this loop takes 5 instruction cycles */
 
     _cmd58();
     _cmd(55, 0);
@@ -227,8 +225,6 @@ int initialise_card_v2(void) {
 }
 
 int disk_initialize(void) {
-  int i = initialise_card();
-  (void)i;
   _sectors = _sd_sectors();
 
   /* Set block length to 512 (CMD16) */

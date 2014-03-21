@@ -71,7 +71,7 @@ void sd_spi_init(void) {
   LPC_IOCON->PIO2_11 &= ~0x07;		/* SSP CLK */
   LPC_IOCON->PIO2_11 |= 0x01;
 
-  /* Set DSS data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 0, and SCR is 2 */
+  /* Set DSS data to 8-bit, Frame format SPI, CPOL = 0, CPHA = 0, and SCR is 0 */
   LPC_SPI0->CR0 = 0x0007;
 
   /* Initially 100kHz */
@@ -98,6 +98,9 @@ void SSP0_IRQHandler(void) {
 
   // Unused
   (void)data;
+
+  /* Clear interrupts */
+  LPC_SPI0->ICR |= 0x3;
 
   return;
 }
