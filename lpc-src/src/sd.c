@@ -207,7 +207,7 @@ int initialise_card_v1(void) {
 }
 
 int initialise_card_v2(void) {
-  uint32_t i, t;
+  uint32_t i;
 
   for (i = 0; i < SD_COMMAND_TIMEOUT; i++) {
 
