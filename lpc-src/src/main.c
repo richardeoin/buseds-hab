@@ -39,6 +39,7 @@
 #include "gps.h"
 #include "uart.h"
 #include "protocol.h"
+#include "disk_write.h"
 
 /**
  * RTTY Baud Clock.
@@ -132,7 +133,7 @@ int main (void) {
 
     /* Store */
     if (sd_good) {
-
+      disk_write_next_block((uint8_t*)tx_string, tx_length);
     }
 
     /* Housekeeping */

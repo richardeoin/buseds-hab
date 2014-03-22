@@ -1,4 +1,5 @@
 SOURCES += src/sd_spi.c \
+src/disk_write.c \
 src/i2c.c \
 src/spi.c \
 src/tmp102.c \
