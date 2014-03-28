@@ -13,5 +13,5 @@
 * **Acceleration X**
 * **Acceleration Y**
 * **Acceleration Z**
-* **Cutdown State**
+* **Minutes until Cutdown**        120
 * **Checksum**                     XMODEM 16 bit CRC

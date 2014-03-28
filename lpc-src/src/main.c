@@ -46,15 +46,27 @@
  */
 #define RTTY_BAUD       	50
 /**
- * The mBed is powered on below the given barometric altitude
+ * The mBed is powered on below the given barometric altitude in
+ * meters
  */
 #define GSM_ON_BELOW_ALTITUDE	1000
 /**
  * The maximu length of a single transmitter string
  */
 #define TX_STRING_LENGTH	0x200
+/**
+ * The number of minutes until the cutdown system activates
+ * MAX = 2^32/60*RTTY_BAUD ~= 10^6
+ */
+#define CUTDOWN_TIME		60*2
+/**
+ * The minimum barometric altitude in meters at which the balloon must
+ * be for cutdown to occour.
+ */
+#define MIN_CUTDOWN_ALTITUDE	1000
 
 int sd_good = 0;
+uint32_t ticks_until_cutdown = CUTDOWN_TIME * RTTY_BAUD * 60;
 
 int main (void) {
   SystemInit();
@@ -124,6 +136,12 @@ int main (void) {
       MBED_OFF();
     }
 
+    if (ticks_until_cutdown == 0 && alt > MIN_CUTDOWN_ALTITUDE) {
+      CUTDOWN_ON(); // Mechanical disconnect
+    } else {
+      CUTDOWN_OFF();
+    }
+
     /* Create a protocol string */
     tx_length = build_communctions_frame(tx_string, TX_STRING_LENGTH,
 			     &gt, b, &gd, alt, ext_temp, &ir, 0);
@@ -147,4 +165,8 @@ double temp;
 extern void SysTick_Handler(void) {
   /* Push RTTY bits */
   rtty_tick();
+  /* Countdown */
+  if (ticks_until_cutdown) {
+    ticks_until_cutdown--;
+  }
 }
