@@ -7,9 +7,9 @@
 * **GPS Longitude (Decimal Degrees)** -2.593403
 * **GPS Altitude (Meters)**        114
 * **GPS Satillites in View**       7
-* **Barometric Altitude (Meters)** 92
-* **External Temperature (from TMP102)**    18
-* **Internal Temperature (from Barometer)** 22
+* **Barometric Altitude (Meters)** 92.3
+* **External Temperature (from TMP102)**    18.2
+* **Internal Temperature (from Barometer)** 22.1
 * **Acceleration X**
 * **Acceleration Y**
 * **Acceleration Z**
