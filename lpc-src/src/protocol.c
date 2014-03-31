@@ -25,6 +25,8 @@
 #include "LPC11xx.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
 #include "protocol.h"
 #include "bmp085.h"
 #include "gps.h"
@@ -73,17 +75,21 @@ uint16_t crc_checksum(char *string)
   return crc;
 }
 
+/**
+ * Printing helper functions. From
+ * http://ukhas.org.uk/guides:common_coding_errors_payload_testing
+ */
 int print_six_dp(char* s, size_t n, double val) {
-  int integer = (int)val;
-  int frac = (int)((val - integer) * 1000 * 1000);
+  int i1 = val;
+  long i2 = labs(lround((val - i1) * 1000000));
 
-  return snprintf(s, n, "%d.%06d,", integer, frac);
+  return snprintf(s, n, "%s%li.%06li,", (val < 0 ? "-" : ""), labs(i1), i2);
 }
 int print_one_dp(char* s, size_t n, double val) {
-  int integer = (int)val;
-  int frac = (int)((val - integer) * 10);
+  int i1 = val;
+  long i2 = labs(lround((val - i1) * 10));
 
-  return snprintf(s, n, "%d.%01d,", integer, frac);
+  return snprintf(s, n, "%s%li.%01li,", (val < 0 ? "-" : ""), labs(i1), i2);
 }
 
 /**
@@ -175,7 +181,7 @@ int main(int argc, char** argv) {
   gd.altitude = 2333; gd.satellites = 9;
   ir.accel.x = 100; ir.accel.y = 100; ir.accel.z = 100;
 
-  build_communctions_frame(string, 1000, &gt, &b, &gd, 145.2, 20.1, &ir, 120, 5.6);
+  build_communctions_frame(string, 1000, &gt, &b, &gd, 145.2, -0.2, &ir, 120, 5.6);
 
   printf("%s", string);
 

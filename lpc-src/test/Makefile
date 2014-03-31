@@ -42,7 +42,7 @@ gps-test: ../src/gps.c
 	$(CC) $(CFLAGS) -D GPS_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $< -lm
 
 protocol-test: ../src/protocol.c
-	$(CC) $(CFLAGS) -D PROTOCOL_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $<
+	$(CC) $(CFLAGS) -D PROTOCOL_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $< -lm
 
 tmp102-test: ../src/tmp102.c ../src/i2c.c
 	$(CC) $(CFLAGS) -D TMP102_TEST $(addprefix -I ../,$(INCLUDES)) -o $@ $< ../src/i2c.c
