@@ -171,7 +171,7 @@ sources:
 #
 #
 #
-test:
+test: test/*
 	@cd test && $(MAKE) all && cd ..
 
 # Creates a gdb script if required
