@@ -78,20 +78,21 @@ uint16_t crc_checksum(char *string)
  * at http://ukhas.org.uk/communication:protocol
  */
 int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
-			      struct barometer* b, struct gps_data* gd,
-			      double b_altitude, double temperature,
-			      struct imu_raw* ir, int cutdown)
+			     struct barometer* b, struct gps_data* gd,
+			     double b_altitude, double temperature,
+			     struct imu_raw* ir,
+			     int cutdown_minutes, float cutdown_voltage)
 {
   int print_size;
 
   print_size = snprintf(string, string_size,
-			"$$%s,%d,%02d:%02d:%02d,%.6f,%.6f,%d,%d,%.1f,%.1f,%.1f,%d,%d,%d,%d",
+			"$$%s,%d,%02d:%02d:%02d,%.6f,%.6f,%d,%d,%.1f,%.1f,%.1f,%d,%d,%d,%d,%f",
 			CALLSIGN, sentence_id++,
 			gt->hours, gt->minutes, gt->seconds, /* Time */
 			gd->lat, gd->lon, gd->altitude, gd->satellites,/* GPS */
 			b_altitude, temperature, b->temperature, /* TMP/BMP */
 			ir->accel.x, ir->accel.y, ir->accel.z,/* Acceleration */
-			cutdown); /* Minutes until Cutdown */
+			cutdown_minutes, cutdown_voltage); /* Cutdown */
 
   /* If the above print plus checksum will be truncated */
   if (print_size >= (string_size - 7)) {
@@ -115,6 +116,9 @@ int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
 #include <stdio.h>
 
 int main(int argc, char** argv) {
+  (void)argc; // UNUSED
+  (void)argv;
+
   printf("*** PROTOCOL_TEST ***\n\n");
 
   char string[1000];
@@ -129,7 +133,7 @@ int main(int argc, char** argv) {
   gd.altitude = 2333; gd.satellites = 9;
   ir.accel.x = 100; ir.accel.y = 100; ir.accel.z = 100;
 
-  build_communctions_frame(string, 1000, &gt, &b, &gd, 145.2, 20.1, &ir, 120);
+  build_communctions_frame(string, 1000, &gt, &b, &gd, 145.2, 20.1, &ir, 120, 5.6);
 
   printf("%s", string);
 

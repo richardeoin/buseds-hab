@@ -32,8 +32,9 @@
 #define CALLSIGN        "BUSEDS1"
 
 int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
-			      struct barometer* b, struct gps_data* gd,
-			      double altitude, double temperature,
-			      struct imu_raw* ir, int cutdown);
+			     struct barometer* b, struct gps_data* gd,
+			     double altitude, double temperature,
+			     struct imu_raw* ir,
+			     int cutdown_minutes, float cutdown_voltage);
 
 #endif /* PROTOCOL_H */

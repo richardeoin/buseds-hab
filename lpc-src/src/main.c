@@ -144,7 +144,9 @@ int main (void) {
 
     /* Create a protocol string */
     tx_length = build_communctions_frame(tx_string, TX_STRING_LENGTH,
-			     &gt, b, &gd, alt, ext_temp, &ir, 0);
+					 &gt, b, &gd, alt, ext_temp, &ir,
+					 ticks_until_cutdown / (RTTY_BAUD*60),
+					 5.6);
 
     /* Transmit - Quietly fails if another transmission is ongoing */
     rtty_set_string(tx_string, tx_length);

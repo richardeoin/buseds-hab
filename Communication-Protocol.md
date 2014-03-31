@@ -10,8 +10,9 @@
 * **Barometric Altitude (Meters)** 92.3
 * **External Temperature (from TMP102)**    18.2
 * **Internal Temperature (from Barometer)** 22.1
-* **Acceleration X**
-* **Acceleration Y**
-* **Acceleration Z**
+* **Acceleration X**               100
+* **Acceleration Y**               100
+* **Acceleration Z**               100
 * **Minutes until Cutdown**        120
+* **Battery on Cutdown Line**      5.6
 * **Checksum**                     XMODEM 16 bit CRC
