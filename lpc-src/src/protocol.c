@@ -133,7 +133,7 @@ int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
 			 "%d,", cutdown_minutes);
   print_size += print_one_dp(string + print_size, string_size - print_size,
 			     cutdown_voltage);
-  print_size--; // Delete last comma
+  print_size--; string[print_size] = '\0';// Delete last comma
 
   /* If the above print plus checksum will be truncated */
   if (print_size >= (string_size - 7)) {
