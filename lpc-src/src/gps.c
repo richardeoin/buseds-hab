@@ -76,7 +76,10 @@ int process_gps_frame(char* frame) {
 
   /* Next field */
   frame = strchr(frame, ','); frame++;
-  /* Fix Indicator: IGNORE */
+  /* Fix Indicator */
+  if (frame[0] == '0') { // No lock
+    gps_data.lat = 0; gps_data.lon = 0;
+  }
 
   /* Next field */
   frame = strchr(frame, ','); frame++;
