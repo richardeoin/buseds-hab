@@ -35,7 +35,7 @@
 
 #define RTTY_ACTIVATE()		RTTY_PORT->DIR |=  (1 << RTTY_PIN)
 #define RTTY_DEACTIVATE()	RTTY_PORT->DIR &= ~(1 << RTTY_PIN)
-#define RTTY_SET(b)		RTTY_PORT->MASKED_ACCESS[1 << RTTY_PIN] = (~b << RTTY_PIN)
+#define RTTY_SET(b)		RTTY_PORT->MASKED_ACCESS[1 << RTTY_PIN] = (b << RTTY_PIN)
 #define RTTY_NEXT()
 
 #else
