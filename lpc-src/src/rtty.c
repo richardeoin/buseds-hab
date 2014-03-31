@@ -137,7 +137,7 @@ void rtty_tick(void) {
       }
     }
   } else {
-    RTTY_DEACTIVATE();
+//    RTTY_DEACTIVATE();
   }
 }
 
