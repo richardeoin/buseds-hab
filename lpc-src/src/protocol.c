@@ -86,7 +86,7 @@ int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
   int print_size;
 
   print_size = snprintf(string, string_size,
-			"$$%s,%d,%02d:%02d:%02d,%.6f,%.6f,%d,%d,%.1f,%.1f,%.1f,%d,%d,%d,%d,%f",
+			"$$%s,%d,%02d:%02d:%02d,%.6f,%.6f,%d,%d,%.1f,%.1f,%.1f,%d,%d,%d,%d,%.1f",
 			CALLSIGN, sentence_id++,
 			gt->hours, gt->minutes, gt->seconds, /* Time */
 			gd->lat, gd->lon, gd->altitude, gd->satellites,/* GPS */
@@ -114,6 +114,7 @@ int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
 // Test Dependancies
 #include <assert.h>
 #include <stdio.h>
+#include <time.h>
 
 int main(int argc, char** argv) {
   (void)argc; // UNUSED
@@ -127,7 +128,13 @@ int main(int argc, char** argv) {
   struct gps_data gd;
   struct imu_raw ir;
 
-  gt.hours = 1; gt.minutes = 1; gt.seconds = 1;
+  time_t rawtime;
+  struct tm *ti;
+
+  time(&rawtime);
+  ti = localtime(&rawtime);
+
+  gt.hours = ti->tm_hour; gt.minutes = ti->tm_min; gt.seconds = ti->tm_sec;
   b.temperature = 22.2; b.pressure = 99999;
   gd.lat = 51.23445; gd.lon = -2.23554;
   gd.altitude = 2333; gd.satellites = 9;
