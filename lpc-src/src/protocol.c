@@ -91,7 +91,7 @@ int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
 			gd->lat, gd->lon, gd->altitude, gd->satellites,/* GPS */
 			b_altitude, temperature, b->temperature, /* TMP/BMP */
 			ir->accel.x, ir->accel.y, ir->accel.z,/* Acceleration */
-			cutdown); /* Cutdown State */
+			cutdown); /* Minutes until Cutdown */
 
   /* If the above print plus checksum will be truncated */
   if (print_size >= (string_size - 7)) {
@@ -129,7 +129,7 @@ int main(int argc, char** argv) {
   gd.altitude = 2333; gd.satellites = 9;
   ir.accel.x = 100; ir.accel.y = 100; ir.accel.z = 100;
 
-  build_communctions_frame(string, 1000, &gt, &b, &gd, 145.2, 20.1, &ir, 0);
+  build_communctions_frame(string, 1000, &gt, &b, &gd, 145.2, 20.1, &ir, 120);
 
   printf("%s", string);
 
