@@ -73,6 +73,19 @@ uint16_t crc_checksum(char *string)
   return crc;
 }
 
+int print_six_dp(char* s, size_t n, double val) {
+  int integer = (int)val;
+  int frac = (int)((val - integer) * 1000 * 1000);
+
+  return snprintf(s, n, "%d.%06d,", integer, frac);
+}
+int print_one_dp(char* s, size_t n, double val) {
+  int integer = (int)val;
+  int frac = (int)((val - integer) * 10);
+
+  return snprintf(s, n, "%d.%01d,", integer, frac);
+}
+
 /**
  * Builds a communctions frame compliant with the protocol described
  * at http://ukhas.org.uk/communication:protocol
@@ -86,13 +99,35 @@ int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
   int print_size;
 
   print_size = snprintf(string, string_size,
-			"$$%s,%d,%02d:%02d:%02d,%.6f,%.6f,%d,%d,%.1f,%.1f,%.1f,%d,%d,%d,%d,%.1f",
+			"$$%s,%d,%02d:%02d:%02d,",
 			CALLSIGN, sentence_id++,
-			gt->hours, gt->minutes, gt->seconds, /* Time */
-			gd->lat, gd->lon, gd->altitude, gd->satellites,/* GPS */
-			b_altitude, temperature, b->temperature, /* TMP/BMP */
-			ir->accel.x, ir->accel.y, ir->accel.z,/* Acceleration */
-			cutdown_minutes, cutdown_voltage); /* Cutdown */
+			gt->hours, gt->minutes, gt->seconds);
+  /* GPS */
+  print_size += print_six_dp(string + print_size, string_size - print_size,
+			     gd->lat);
+  print_size += print_six_dp(string + print_size, string_size - print_size,
+			     gd->lon);
+  print_size += snprintf(string + print_size, string_size - print_size,
+			 "%d,%d,", gd->altitude, gd->satellites);
+
+  /* Barometer & Temperature */
+  print_size += print_one_dp(string + print_size, string_size - print_size,
+			     b_altitude);
+  print_size += print_one_dp(string + print_size, string_size - print_size,
+			     temperature);
+  print_size += print_one_dp(string + print_size, string_size - print_size,
+			     b->temperature);
+
+  /* Acceleration */
+  print_size += snprintf(string + print_size, string_size - print_size,
+			 "%d,%d,%d,",
+			 ir->accel.x, ir->accel.y, ir->accel.z);
+  /* Cutdown */
+  print_size += snprintf(string + print_size, string_size - print_size,
+			 "%d,", cutdown_minutes);
+  print_size += print_one_dp(string + print_size, string_size - print_size,
+			     cutdown_voltage);
+  print_size--; // Delete last comma
 
   /* If the above print plus checksum will be truncated */
   if (print_size >= (string_size - 7)) {
