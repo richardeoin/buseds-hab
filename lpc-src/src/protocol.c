@@ -83,11 +83,17 @@ int print_six_dp(char* s, size_t n, double val) {
   int i1 = val;
   long i2 = labs(lround((val - i1) * 1000000));
 
+  // Edge case: increase magnitude of i1, set i2 = 0
+  if (i2 == 1000000) { i1 += (val > 0 ? 1 : -1); i2 = 0; }
+
   return snprintf(s, n, "%s%li.%06li,", (val < 0 ? "-" : ""), labs(i1), i2);
 }
 int print_one_dp(char* s, size_t n, double val) {
   int i1 = val;
   long i2 = labs(lround((val - i1) * 10));
+
+  // Edge case: increase magnitude of i1, set i2 = 0
+  if (i2 == 10) { i1 += (val > 0 ? 1 : -1); i2 = 0; }
 
   return snprintf(s, n, "%s%li.%01li,", (val < 0 ? "-" : ""), labs(i1), i2);
 }
