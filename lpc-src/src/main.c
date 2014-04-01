@@ -64,10 +64,42 @@
  * be for cutdown to occour.
  */
 #define MIN_CUTDOWN_ALTITUDE	1000
+/**
+ * The threshold temperature for the heater to activate in °C
+ */
+#define HEATER_THRESHOLD	-30
 
 int sd_good = 0;
 uint32_t ticks_until_cutdown = CUTDOWN_TIME * RTTY_BAUD * 60;
 
+/**
+ * System Control Logic
+ */
+void control_gsm(double altitude) {
+  if (altitude < GSM_ON_BELOW_ALTITUDE) {
+    MBED_ON();
+  } else {
+    MBED_OFF();
+  }
+}
+void control_cutdown(uint32_t ticks, double altitude) {
+  if (ticks == 0 && altitude > MIN_CUTDOWN_ALTITUDE) {
+    CUTDOWN_ON(); // Mechanical disconnect
+  } else {
+    CUTDOWN_OFF();
+  }
+}
+void control_heater(double internal_temperature) {
+  if (internal_temperature < HEATER_THRESHOLD) {
+    HEATER_ON();
+  } else {
+    HEATER_OFF();
+  }
+}
+
+/**
+ * Main system entry point
+ */
 int main (void) {
   SystemInit();
 
@@ -98,10 +130,6 @@ int main (void) {
 
   GREEN_ON();
 
-  // disk_write("Hello World\0", 12, 0);
-  // uint8_t buff[512];
-  // disk_read(&buff, 12, 0);
-
   /* Configure the SysTick */
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
@@ -130,17 +158,9 @@ int main (void) {
     alt = pressure_to_altitude(b->pressure);
 
     /* Act on the data */
-    if (alt < GSM_ON_BELOW_ALTITUDE) {
-      MBED_ON();
-    } else {
-      MBED_OFF();
-    }
-
-    if (ticks_until_cutdown == 0 && alt > MIN_CUTDOWN_ALTITUDE) {
-      CUTDOWN_ON(); // Mechanical disconnect
-    } else {
-      CUTDOWN_OFF();
-    }
+    control_gsm(alt);
+    control_cutdown(ticks_until_cutdown, alt);
+    control_heater(b->temperature);
 
     /* Create a protocol string */
     tx_length = build_communctions_frame(tx_string, TX_STRING_LENGTH,
@@ -161,8 +181,6 @@ int main (void) {
     feed_watchdog();
   }
 }
-
-double temp;
 
 extern void SysTick_Handler(void) {
   /* Push RTTY bits */
