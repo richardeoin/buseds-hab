@@ -5,6 +5,7 @@ src/spi.c \
 src/tmp102.c \
 src/wdt.c \
 src/rtty.c \
+src/pwrmon.c \
 src/main.c \
 src/gps.c \
 src/altitude.c \

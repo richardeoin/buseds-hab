@@ -40,6 +40,7 @@
 #include "uart.h"
 #include "protocol.h"
 #include "disk_write.h"
+#include "pwrmon.h"
 
 /**
  * RTTY Baud Clock.
@@ -71,6 +72,7 @@
 
 int sd_good = 0;
 uint32_t ticks_until_cutdown = CUTDOWN_TIME * RTTY_BAUD * 60;
+float cutdown_voltage = 0;
 
 /**
  * System Control Logic
@@ -98,6 +100,13 @@ void control_heater(double internal_temperature) {
 }
 
 /**
+ * Called at the end of an ADC conversion
+ */
+void pwrmon_callback(uint16_t adc_value) {
+  cutdown_voltage = adc_value * (6.6 / 1024);
+}
+
+/**
  * Main system entry point
  */
 int main (void) {
@@ -117,6 +126,7 @@ int main (void) {
   spi_init(process_imu_frame); // IMU
   sd_spi_init(); // SD
   uart_init(); // GPS
+  pwrmon_init(); // ADC
 
   /* Initialise Sensors */
   init_barometer();
@@ -146,8 +156,8 @@ int main (void) {
   char tx_string[TX_STRING_LENGTH];
 
   while (1) {
-
     /* Grab Data */
+    pwrmon_start(pwrmon_callback);
     b = get_barometer();
     get_imu_raw_data(&ir);
     get_gps_data(&gd);
@@ -166,7 +176,7 @@ int main (void) {
     tx_length = build_communctions_frame(tx_string, TX_STRING_LENGTH,
 					 &gt, b, &gd, alt, ext_temp, &ir,
 					 ticks_until_cutdown / (RTTY_BAUD*60),
-					 5.6);
+					 cutdown_voltage);
 
     /* Transmit - Quietly fails if another transmission is ongoing */
     rtty_set_string(tx_string, tx_length);
