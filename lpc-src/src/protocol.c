@@ -102,7 +102,7 @@ int print_one_dp(char* s, size_t n, double val) {
  * Builds a communctions frame compliant with the protocol described
  * at http://ukhas.org.uk/communication:protocol
  */
-int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
+int build_communications_frame(char* string, int string_size, struct gps_time* gt,
 			     struct barometer* b, struct gps_data* gd,
 			     double b_altitude, double temperature,
 			     struct imu_raw* ir,
@@ -155,6 +155,11 @@ int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
 
   return 0;
 }
+int communications_frame_add_extra(char* string, int string_length, struct imu_raw* ir) {
+  return snprintf(string, string_length, "*%d,%d,%d,%d,%d,%d\n",
+	   ir->gyro.x, ir->gyro.y, ir->gyro.z,
+	   ir->magneto.x, ir->magneto.y, ir->magneto.z);
+}
 
 #ifdef PROTOCOL_TEST
 
@@ -187,7 +192,7 @@ int main(int argc, char** argv) {
   gd.altitude = 2333; gd.satellites = 9;
   ir.accel.x = 100; ir.accel.y = 100; ir.accel.z = 100;
 
-  build_communctions_frame(string, 1000, &gt, &b, &gd, 145.2, -0.2, &ir, 120, 5.6);
+  build_communications_frame(string, 1000, &gt, &b, &gd, 145.2, -0.2, &ir, 120, 5.6);
 
   printf("%s", string);
 

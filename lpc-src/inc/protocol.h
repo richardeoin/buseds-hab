@@ -31,10 +31,11 @@
 
 #define CALLSIGN        "BUSEDS1"
 
-int build_communctions_frame(char* string, int string_size, struct gps_time* gt,
+int build_communications_frame(char* string, int string_size, struct gps_time* gt,
 			     struct barometer* b, struct gps_data* gd,
 			     double altitude, double temperature,
 			     struct imu_raw* ir,
 			     int cutdown_minutes, float cutdown_voltage);
+int communications_frame_add_extra(char* string, int string_length, struct imu_raw* ir);
 
 #endif /* PROTOCOL_H */

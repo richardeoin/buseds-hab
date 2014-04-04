@@ -43,23 +43,24 @@
 #include "pwrmon.h"
 
 /**
- * RTTY Baud Clock.
+ **************************
+ Flight Parameters
+ *************************/
+
+/**
+ * The number of minutes until the cutdown system activates
+ * MAX = 2^32/60*RTTY_BAUD ~= 10^6
  */
-#define RTTY_BAUD       	50
+#define CUTDOWN_TIME		60*2
 /**
  * The mBed is powered on below the given barometric altitude in
  * meters
  */
 #define GSM_ON_BELOW_ALTITUDE	1000
 /**
- * The maximu length of a single transmitter string
+ * The altitude ceiling at which cutdown will occour
  */
-#define TX_STRING_LENGTH	0x200
-/**
- * The number of minutes until the cutdown system activates
- * MAX = 2^32/60*RTTY_BAUD ~= 10^6
- */
-#define CUTDOWN_TIME		60*2
+#define CUTDOWN_CEILING		60000
 /**
  * The minimum barometric altitude in meters at which the balloon must
  * be for cutdown to occour.
@@ -70,13 +71,36 @@
  */
 #define HEATER_THRESHOLD	-30
 
+
+
+/**
+ **************************
+ System Parameters
+ *************************/
+
+/**
+ * RTTY Baud Clock.
+ */
+#define RTTY_BAUD       	50
+/**
+ * The maximum length of a single transmitter string
+ */
+#define TX_STRING_LENGTH	0x200
+
+/**
+ **************************
+ Globals
+ *************************/
+
 int sd_good = 0;
 uint32_t ticks_until_cutdown = CUTDOWN_TIME * RTTY_BAUD * 60;
 float cutdown_voltage = 0;
 
 /**
- * System Control Logic
- */
+ **************************
+ System Control Logic
+ *************************/
+
 void control_gsm(double altitude) {
   if (altitude < GSM_ON_BELOW_ALTITUDE) {
     MBED_ON();
@@ -85,7 +109,9 @@ void control_gsm(double altitude) {
   }
 }
 void control_cutdown(uint32_t ticks, double altitude) {
-  if (ticks == 0 && altitude > MIN_CUTDOWN_ALTITUDE) {
+  if ((ticks == 0 && altitude > MIN_CUTDOWN_ALTITUDE) ||
+      altitude > CUTDOWN_CEILING) {
+
     CUTDOWN_ON(); // Mechanical disconnect
   } else {
     CUTDOWN_OFF();
@@ -173,7 +199,7 @@ int main (void) {
     control_heater(b->temperature);
 
     /* Create a protocol string */
-    tx_length = build_communctions_frame(tx_string, TX_STRING_LENGTH,
+    tx_length = build_communications_frame(tx_string, TX_STRING_LENGTH,
 					 &gt, b, &gd, alt, ext_temp, &ir,
 					 ticks_until_cutdown / (RTTY_BAUD*60),
 					 cutdown_voltage);
@@ -183,7 +209,11 @@ int main (void) {
 
     /* Store */
     if (sd_good) {
-      disk_write_next_block((uint8_t*)tx_string, tx_length);
+      tx_length -= 2; // Remove \n\0
+      tx_length += communications_frame_add_extra(tx_string + tx_length,
+				     TX_STRING_LENGTH - tx_length, &ir);
+
+      disk_write_next_block((uint8_t*)tx_string, tx_length+1); // Include null terminator
     }
 
     /* Housekeeping */
