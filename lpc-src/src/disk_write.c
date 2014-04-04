@@ -34,12 +34,12 @@ uint32_t next_block = 0;
 uint32_t get_next_block(void) {
   uint32_t block;
 
-  disk_read((uint8_t*)(&block), 1, 0);
+  disk_read((uint8_t*)(&block), 4, 0);
 
   return block;
 }
 int set_next_block(uint32_t block) {
-  return disk_write((uint8_t*)(&block), 1, 0);
+  return disk_write((uint8_t*)(&block), 4, 0);
 }
 
 /**
