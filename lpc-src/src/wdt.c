@@ -49,8 +49,8 @@ void init_watchdog(void) {
   LPC_SYSCON->WDTCLKUEN = 0;
   LPC_SYSCON->WDTCLKUEN = 1; // Switch Clock
 
-  /* IRC = 12MHz, TC = 4 * 6*10_6, => Twdt = 2 seconds */
-  LPC_WDT->TC = 6*1000*1000;
+  /* IRC = 12MHz, TC = 4 * 12*10_6, => Twdt = 4 seconds */
+  LPC_WDT->TC = 12*1000*1000; // MAX: 2^24
 
   /* Lock on the watchdog */
   LPC_WDT->MOD |= 0x3; // WDEN = 1, WDRESET = 1
