@@ -117,7 +117,7 @@
 #include "sd.h"
 #include "sd_spi.h"
 
-#define SD_COMMAND_TIMEOUT 5000
+#define SD_COMMAND_TIMEOUT 100
 
 #define SD_DBG             0
 
