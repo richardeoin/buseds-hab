@@ -39,6 +39,7 @@ int process_gps_frame(char* frame) {
   int frac_seconds;
   int lat_deg, lat_min, lat_frac_min;
   int long_deg, long_min, long_frac_min;
+  int fi;
 
   if (strncmp(frame, "$GPGGA", 6)) {
     return 1;			/* String starts wrong */
@@ -77,9 +78,7 @@ int process_gps_frame(char* frame) {
   /* Next field */
   frame = strchr(frame, ','); frame++;
   /* Fix Indicator */
-  if (frame[0] == '0') { // No lock
-    gps_data.lat = 0; gps_data.lon = 0;
-  }
+  sscanf(frame, "%d", &fi);
 
   /* Next field */
   frame = strchr(frame, ','); frame++;
@@ -94,6 +93,12 @@ int process_gps_frame(char* frame) {
   frame = strchr(frame, ','); frame++;
   /* Altitude */
   sscanf(frame, "%d", &gps_data.altitude);
+
+  if (fi == 0) { // No lock
+    gps_data.lat = 0; gps_data.lon = 0;
+    gps_data.altitude = 0;
+  }
+
 
   return 0;
 }
