@@ -48,6 +48,10 @@
  *************************/
 
 /**
+ * Watchdog disabled to allow debugging - REMOVE BEFORE FLIGHT
+ */
+#define WATCHDOG_DISABLED
+/**
  * The number of minutes until the cutdown system activates
  * MAX = 2^32/60*RTTY_BAUD ~= 10^6
  */
@@ -171,7 +175,9 @@ int main (void) {
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
   /* Watchdog - Disabled for debugging */
+#ifndef WATCHDOG_DISABLED
   init_watchdog();
+#endif
 
   struct barometer* b;
   struct imu_raw ir;
