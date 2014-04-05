@@ -55,7 +55,7 @@
  * The number of minutes until the cutdown system activates
  * MAX = 2^32/60*RTTY_BAUD ~= 10^6
  */
-#define CUTDOWN_TIME		60*2
+#define CUTDOWN_TIME		1
 /**
  * The mBed is powered on below the given barometric altitude in
  * meters
@@ -69,7 +69,7 @@
  * The minimum barometric altitude in meters at which the balloon must
  * be for cutdown to occour.
  */
-#define MIN_CUTDOWN_ALTITUDE	1000
+#define MIN_CUTDOWN_ALTITUDE	1
 /**
  * The threshold temperature for the heater to activate in °C
  */
@@ -211,10 +211,15 @@ int main (void) {
     control_heater(b->temperature);
 
     /* Create a protocol string */
+    int cutstat;
+    if (ticks_until_cutdown == 0) {
+      cutstat = -1;
+    } else {
+      cutstat = ticks_until_cutdown / (RTTY_BAUD*60);
+    }
     tx_length = build_communications_frame(tx_string, TX_STRING_LENGTH,
-					 &gt, b, &gd, alt, ext_temp, &ir,
-					 ticks_until_cutdown / (RTTY_BAUD*60),
-					 cutdown_voltage);
+					   &gt, b, &gd, alt, ext_temp, &ir,
+					   cutstat,  cutdown_voltage);
 
     /* Transmit - Quietly fails if another transmission is ongoing */
     rtty_set_string(tx_string, tx_length);
