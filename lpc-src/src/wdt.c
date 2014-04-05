@@ -46,8 +46,10 @@ void init_watchdog(void) {
   LPC_SYSCON->SYSAHBCLKCTRL |= (1 << 15);
 
   LPC_SYSCON->WDTCLKSEL = 0x0; // Use IRC oscillator
+  LPC_SYSCON->WDTCLKUEN = 1; // Switch Clock
   LPC_SYSCON->WDTCLKUEN = 0;
   LPC_SYSCON->WDTCLKUEN = 1; // Switch Clock
+  LPC_SYSCON->WDTCLKDIV = 1;
 
   /* IRC = 12MHz, TC = 4 * 12*10_6, => Twdt = 4 seconds */
   LPC_WDT->TC = 12*1000*1000; // MAX: 2^24
@@ -57,4 +59,7 @@ void init_watchdog(void) {
 
   /* And feed to enable */
   feed_watchdog();
+
+  /* Make sure feed sequence completed */
+  for (int i = 0; i < 0x80000; i++);
 }
