@@ -299,6 +299,7 @@ void i2c_init(void) {
 #endif
 
   /* Enable the I2C Interrupt */
+  NVIC_SetPriority(I2C_IRQn, 1); // 2nd priority
   NVIC_EnableIRQ(I2C_IRQn);
   LPC_I2C->CONSET = I2CONSET_I2EN;
 

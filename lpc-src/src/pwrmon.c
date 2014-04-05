@@ -67,7 +67,7 @@ void pwrmon_start(pwrmon_done_func _callback) {
   LPC_ADC->CR = ((8-1) << 8);	/* Divide PCLK by 8 */
 
   /* Enable Interrupts */
-  NVIC_SetPriority(ADC_IRQn, 2);
+  NVIC_SetPriority(ADC_IRQn, 2); // 3rd priority
   NVIC_EnableIRQ(ADC_IRQn);
   LPC_ADC->INTEN = (1 << PWRMON_ADC_CHANNEL);	/* Only interrupt on the selected channel */
 

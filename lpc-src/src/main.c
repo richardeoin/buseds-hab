@@ -167,6 +167,7 @@ int main (void) {
   GREEN_ON();
 
   /* Configure the SysTick */
+  NVIC_SetPriority(SysTick_IRQn, 0); // Highest Priority Interrupt
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
   /* Watchdog - Disabled for debugging */

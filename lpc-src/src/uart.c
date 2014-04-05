@@ -131,7 +131,7 @@ void uart_init(void) {
   LPC_UART->IER |= (1 << 2) | (1 << 0); /* Enable the RBR and RXL interrupts */
 
   /* Enable the interrupt in the NVIC */
-  NVIC_SetPriority(UART_IRQn, 1);/* 2nd highest priority*/
+  NVIC_SetPriority(UART_IRQn, 1); /* 2nd highest priority*/
   NVIC_EnableIRQ(UART_IRQn);
 
   /* Start the receiver waiting for the start of a packet */

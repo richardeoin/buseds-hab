@@ -85,6 +85,7 @@ void sd_spi_init(void) {
   LPC_SPI0->IMSC = SSPIMSC_RORIM | SSPIMSC_RTIM;
 
   /* Enable interrupts in the NVIC */
+  NVIC_SetPriority(SSP0_IRQn, 1); // 2nd priority level
   NVIC_EnableIRQ(SSP0_IRQn);
 }
 
