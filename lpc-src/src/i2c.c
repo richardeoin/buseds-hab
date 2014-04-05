@@ -258,7 +258,7 @@ static uint32_t i2c_stop(void) {
   {
     timeout++;
   }
-  return (timeout >= MAX_TIMEOUT);
+  return (timeout < MAX_TIMEOUT);
 }
 
 /*****************************************************************************
@@ -325,9 +325,9 @@ uint32_t i2c_engine(void) {
   WrIndex = 0;
   uint32_t timeout = 100*1000;
 
-  if (!i2c_start()) {
+  if (!i2c_start()) { // Start failed
     i2c_stop();
-    return 0;;
+    return 0; // Timeout: Idle
   }
 
   /* wait until the state is a terminal state */
@@ -336,7 +336,7 @@ uint32_t i2c_engine(void) {
   if (timeout > 0) { // We didn't timeout
     return I2CMasterState;
   } else {
-    return 1;
+    return 1; // Timeout: Pending
   }
 }
 

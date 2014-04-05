@@ -43,7 +43,7 @@
 #define FAST_MODE_PLUS      0
 
 #define I2C_BUFSIZE         64
-#define MAX_TIMEOUT         0x000FFFFF
+#define MAX_TIMEOUT         0x0000FFFF
 
 #define I2CMASTER           0x01
 #define I2CSLAVE            0x02
