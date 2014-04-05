@@ -1,7 +1,7 @@
-/* 
+/*
  * Reads data from a BMP085
  * Copyright (C) 2013  richard
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the
  * "Software"), to deal in the Software without restriction, including
@@ -9,10 +9,10 @@
  * distribute, sublicense, and/or sell copies of the Software, and to
  * permit persons to whom the Software is furnished to do so, subject to
  * the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
  * MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -91,7 +91,7 @@ uint8_t oversampling(void) {
  * Implements a microsecond delay for use with the BMP085
  */
 void bmp085_delay_us(uint16_t microseconds) {
-  int32_t i = microseconds * 100;
+  int32_t i = microseconds * 12;
 
   while(i--);
 }
@@ -150,7 +150,9 @@ void bmp085_get_cal_param(struct calibration *c) {
  * Takes a temperature measurement and returns the uncompensated value.
  */
 int32_t bmp085_get_ut(void) {
-  write_command(TEMPERATURE);
+  if (write_command(TEMPERATURE) == -1) {
+    return -1; // Fail
+  }
 
   bmp085_delay_us(TEMPERATURE_DELAY);
 
@@ -160,7 +162,9 @@ int32_t bmp085_get_ut(void) {
  * Takes a pressure measurement and returns the uncompenstated value.
  */
 int32_t bmp085_get_up(void) {
-  write_command(PRESSURE_MODE);
+  if (write_command(PRESSURE_MODE) == -1) {
+    return -1; // Fail
+  }
 
   bmp085_delay_us(PRESSURE_DELAY);
 
@@ -181,12 +185,19 @@ int32_t bmp085_get_up(void) {
  * Returns the variable B5, which is used for both temperature and
  * pressure calculations.
  */
-int32_t get_B5(struct calibration *c) {
+int32_t get_B5(struct calibration *c, int32_t* b5) {
   int32_t x1, x2;
+  int32_t ut = bmp085_get_ut();
 
-  x1 = ((bmp085_get_ut() - c->AC6) * c->AC5) >> 15;
+  if (ut == -1) {
+    return -1;
+  }
+
+  x1 = ((ut - c->AC6) * c->AC5) >> 15;
   x2 = (double)(c->MC << 11) / (x1 + c->MD);
-  return x1 + x2; // B5
+  *b5 = x1 + x2; // B5
+
+  return 1;
 }
 /**
  * Returns the temperature in °C using variable B5
@@ -202,6 +213,12 @@ int32_t bmp085_get_pressure(struct calibration *c, int32_t B5) {
   int64_t B6, X1, X2, X3, B3, pressure;
   uint64_t B4, B7;
 
+  int32_t up = bmp085_get_up();
+
+  if (up == -1) {
+    return -1;
+  }
+
   B6 = B5 - 4000;
   X1 = (c->B2 * ((B6 * B6) >> 12)) >> 11;
   X2 = (c->AC2 * B6) >> 11;
@@ -211,7 +228,7 @@ int32_t bmp085_get_pressure(struct calibration *c, int32_t B5) {
   X2 = (c->B1 * ((B6 * B6) >> 12)) >> 16;
   X3 = ((X1 + X2) + 2) >> 2;
   B4 = (c->AC4 * (uint64_t)(X3 + 32768)) >> 15;
-  B7 = ((uint64_t)(bmp085_get_up() - B3) * (50000 >> oversampling()));
+  B7 = ((uint64_t)(up - B3) * (50000 >> oversampling()));
 
   if (B7 < 0x80000000) {
     pressure = (B7 << 1) / B4;
@@ -228,16 +245,27 @@ int32_t bmp085_get_pressure(struct calibration *c, int32_t B5) {
   return pressure;
 }
 
-
-
 struct barometer* get_barometer(void) {
-  int64_t B5 = get_B5(&calibration);
+  int64_t B5;
 
-  // Temperature
-  barometer.temperature = bmp085_get_temperature(B5);
+  if (get_B5(&calibration, &B5) == -1) {
+    // Invalid
+    barometer.valid = 0;
 
-  // Pressure
-  barometer.pressure = bmp085_get_pressure(&calibration, B5);
+  } else {
+    // Temperature
+    barometer.temperature = bmp085_get_temperature(B5);
+
+    // Pressure
+    barometer.pressure = bmp085_get_pressure(&calibration, B5);
+
+    // Valid
+    if (barometer.pressure != -1) {
+      barometer.valid = 1;
+    } else {
+      barometer.valid = 0;
+    }
+  }
 
   return &barometer;
 }

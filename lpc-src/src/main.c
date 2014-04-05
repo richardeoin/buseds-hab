@@ -102,7 +102,7 @@ float cutdown_voltage = 0;
  *************************/
 
 void control_gsm(double altitude) {
-  if (altitude < GSM_ON_BELOW_ALTITUDE) {
+  if (altitude < GSM_ON_BELOW_ALTITUDE && altitude != -1) {
     MBED_ON();
   } else {
     MBED_OFF();
@@ -110,7 +110,7 @@ void control_gsm(double altitude) {
 }
 void control_cutdown(uint32_t ticks, double altitude) {
   if ((ticks == 0 && altitude > MIN_CUTDOWN_ALTITUDE) ||
-      altitude > CUTDOWN_CEILING) {
+      (altitude > CUTDOWN_CEILING && altitude != -1)) {
 
     CUTDOWN_ON(); // Mechanical disconnect
   } else {
@@ -118,7 +118,7 @@ void control_cutdown(uint32_t ticks, double altitude) {
   }
 }
 void control_heater(double internal_temperature) {
-  if (internal_temperature < HEATER_THRESHOLD) {
+  if (internal_temperature < HEATER_THRESHOLD && internal_temperature != -1) {
     HEATER_ON();
   } else {
     HEATER_OFF();
@@ -171,7 +171,7 @@ int main (void) {
   SysTick_Config(SystemCoreClock / RTTY_BAUD);
 
   /* Watchdog - Disabled for debugging */
-  //init_watchdog();
+  init_watchdog();
 
   struct barometer* b;
   struct imu_raw ir;
@@ -192,7 +192,12 @@ int main (void) {
     ext_temp = get_temperature();
 
     /* Data Processing */
-    alt = pressure_to_altitude(b->pressure);
+    if (b->valid) {
+      alt = pressure_to_altitude(b->pressure);
+    } else {
+      alt = -1;
+      b->temperature = -1;
+    }
 
     /* Act on the data */
     control_gsm(alt);
