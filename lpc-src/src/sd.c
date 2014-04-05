@@ -246,7 +246,7 @@ int disk_write(const uint8_t *buffer, uint32_t length, uint64_t block_number) {
   if (block_number > 0x007FFFFF) { return 0; } /* We don't support the 64-bit address space yet */
 
   /* Set write address for single block (CMD24) */
-  if (_cmd(24, block_number * 512) != 0) {
+  if (_cmd(24, block_number * cdv) != 0) {
     return 1;
   }
 
@@ -266,7 +266,7 @@ int disk_read(uint8_t *buffer, uint32_t length, uint64_t block_number) {
   if (block_number > 0x007FFFFF) { return 0; }
 
   /* Set read address for single block (CMD17) */
-  if (_cmd(17, block_number * 512) != 0) {
+  if (_cmd(17, block_number * cdv) != 0) {
     return 1;
   }
 
