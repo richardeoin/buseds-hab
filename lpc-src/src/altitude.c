@@ -1,5 +1,5 @@
 /*
- * Calcuates altitude in the bottom layer of a 1976 US Standard Atmosphere
+ * Calcuates altitude in a International Standard Atmosphere
  * Copyright (C) 2013  richard
  *
  * Permission is hereby granted, free of charge, to any person obtaining
@@ -28,24 +28,34 @@
 
 /**
  * Useful Resources:
+ * Wikipedia: http://en.wikipedia.org/wiki/International_Standard_Atmosphere
  * Wikipedia: http://en.wikipedia.org/wiki/Barometric_formula
+ *
  * Online Calculator: http://www.digitaldutch.com/atmoscalc/
+ * (For Geopotential altitude, not Geometric)
+ *
+ * Mathematical Description: http://www.atmosculator.com/The%20Standard%20Atmosphere.html
+ *
+ * Test Data: http://www.wolframalpha.com/input/?i=air+pressure+at+11km+in+pascals
+ * (Works with Geometric altitude as you would expect, very clever)
  */
 
 /* Layer Heights h0 -> h7 (km) */
 double h[] = { 0, 11, 20, 32, 47, 51, 71, 84.8520 };
-/* Pressures p0 -> p7 (Pa) */
+/* Base Pressures p0 -> p7 (Pa) */
 double p[] = { 101325, 22632.0, 5474.89, 868.019,
 	       110.906, 66.9388, 3.95642, 0.373384 };
 /* Lapse Rate l0 -> l7 (K/km) */
 double l[] = { -6.5, 0, 1.0, 2.8, 0, -2.8, -2, 0 };
-/* Temperature t0 -> t7 (K) */
+/* Base Temperatures t0 -> t7 (K) */
 double t[] = { 288.15, 216.65, 216.65, 228.65,
 	       270.65, 270.65, 214.65, 186.946 };
 /* Gas Constant of Air (J/kgK) */
 #define R	287.053
 /* Gravity at 45° Latitude (m/s2) */
 #define G	-9.80665
+/* Volumetric Mean Radius of the Earth (km) */
+#define RE	6371
 
 /* Scaling Function: Height (m) */
 double hi(int i) { return h[i] * 1000; }
@@ -65,10 +75,9 @@ double isothermic_layer(double pr, int i) {
   return hi(i) + ((R * t[i]) / G) * log(pr / p[i]);
 }
 /**
- * Returns the altitude in meters for a given pressure in Pascals
+ * Returns the geopotential altitude in meters of a given pressure in Pascals
  */
-double pressure_to_altitude(int32_t pressure) {
-  double pr = (double)pressure;
+double geopotential_altitude(double pr) {
 
   if (pr <= p[6]) { // Layer 6: Normal
     return normal_layer(pr, 6);
@@ -92,13 +101,22 @@ double pressure_to_altitude(int32_t pressure) {
   // Layer 0: Normal
   return normal_layer(pr, 0);
 }
+/**
+ * Returns the geometric altitude in meters for a given pressure in Pascals
+ */
+double pressure_to_altitude(int32_t pressure) {
+  double pr = (double)pressure;
+  double height = geopotential_altitude(pr);
+
+  return (height * (RE * 1000)) / ((RE * 1000) - height);
+}
 
 #ifdef ALTITUDE_TEST
 
 #include <stdio.h>
 #include <stdlib.h>
 
-#define MAX_ERROR 20
+#define MAX_ERROR 10
 
 void altitude_test(double altitude, uint32_t pressure) {
   double test_altitude = pressure_to_altitude(pressure);
@@ -116,19 +134,19 @@ void altitude_test(double altitude, uint32_t pressure) {
 int main(void) {
   printf("*** ALTITUDE_TEST ***\n\n");
 
-  printf("Data from Wolfram Alpha/ http://www.digitaldutch.com/atmoscalc/...\n\n");
-  altitude_test( -100, 102532 );
-  altitude_test(    0, 101325 );
-  altitude_test( 1000, 89874.6);
-  altitude_test( 3000, 70108.5);
-  altitude_test( 7000, 41060.7);
-  altitude_test(11000, 22632.1);
-  altitude_test(15000, 12044.6);
-  altitude_test(20000, 5474.89);
-  altitude_test(25000, 2511.02);
-  altitude_test(30000, 1171.87);
-  altitude_test(35000, 558.924);
-  altitude_test(40000, 277.522);
+  printf("Data from Wolfram Alpha...\n\n");
+  altitude_test(-100, 102500);
+  altitude_test(   0, 101300);
+  altitude_test( 1000, 89880);
+  altitude_test( 3000, 70120);
+  altitude_test( 7000, 41110);
+  altitude_test(11000, 22700);
+  altitude_test(15000, 12110);
+  altitude_test(20000,  5529);
+  altitude_test(25000,  2549);
+  altitude_test(30000,  1197);
+  altitude_test(35000,   575);
+  altitude_test(40000,   287);
 
   printf("\n*** DONE ***\n");
 }
