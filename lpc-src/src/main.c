@@ -43,33 +43,33 @@
 #include "pwrmon.h"
 
 /**
- **************************
+saydah **************************
  Flight Parameters
  *************************/
 
 /**
  * Watchdog disabled to allow debugging - REMOVE BEFORE FLIGHT
  */
-#define WATCHDOG_DISABLED
+/*#define WATCHDOG_DISABLED*/
 /**
  * The number of minutes until the cutdown system activates
  * MAX = 2^32/60*RTTY_BAUD ~= 10^6
  */
-#define CUTDOWN_TIME		1
+#define CUTDOWN_TIME		180
 /**
  * The mBed is powered on below the given barometric altitude in
  * meters
  */
 #define GSM_ON_BELOW_ALTITUDE	1000
 /**
- * The altitude ceiling at which cutdown will occour
+ * The altitude ceiling at which cutdown will occour (in meters)
  */
-#define CUTDOWN_CEILING		60000
+#define CUTDOWN_CEILING		40000
 /**
  * The minimum barometric altitude in meters at which the balloon must
  * be for cutdown to occour.
  */
-#define MIN_CUTDOWN_ALTITUDE	1
+#define MIN_CUTDOWN_ALTITUDE	1000
 /**
  * The threshold temperature for the heater to activate in °C
  */
