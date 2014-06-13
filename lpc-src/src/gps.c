@@ -32,6 +32,31 @@ int access_flag = 0;
 struct gps_data gps_data;
 struct gps_time gps_time;
 
+int check_gps_frame(char* frame) {
+  int checksum = 0, frame_checksum;
+
+  /* Skip dollar preamble */
+  while (*frame == '$') {
+    frame++;
+  }
+
+  /* Calculate checksum to asterisk */
+  while(*frame && *frame != '*') {
+    checksum ^= *frame++;
+  }
+
+  /* Skip asterisk */
+  frame++;
+
+  /* Parse the frame checksum */
+  sscanf(frame, "%2x", &frame_checksum);
+
+  /* Debug */
+  //printf("C = 0x%x, FC = 0x%x\n", checksum, frame_checksum);
+
+  return (checksum == frame_checksum) ? 1 : 0;
+}
+
 /**
  * Processes a single NMEA GPS frame.
  */
@@ -43,6 +68,10 @@ int process_gps_frame(char* frame) {
 
   if (strncmp(frame, "$GPGGA", 6)) {
     return 1;			/* String starts wrong */
+  }
+
+  if (!check_gps_frame(frame)) {
+    return 1;			/* Checksum failed */
   }
 
   /* Next field */
@@ -127,7 +156,9 @@ void test_frame(FILE* fp) {
   if (fgets(frame_string, 0x100, fp)) {
 
     printf("\nTesting: %s", frame_string);
-    process_gps_frame(frame_string);
+    if (process_gps_frame(frame_string)) { // Error
+      printf("Error processing...\n\n");
+    }
   }
 }
 

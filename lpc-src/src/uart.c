@@ -36,9 +36,11 @@
 char nmea_frame[MAX_NMEA_FRAME_SIZE];
 
 #define START_CODE		'$'
+#define CHECKSUM_CODE		'*'
+#define CHECKSUM_LENGTH		2
 #define RX_FIFO_TRIGGER_LEVEL	14
 
-int in_index;
+int in_index, checksum_index;
 
 /**
  * Called when a character can be read from the Rx FIFO.
@@ -54,6 +56,7 @@ void rx_read(uint8_t number) {
 
       /* Start a new frame */
       in_index = 0;
+      checksum_index = 0;
       nmea_frame[in_index] = data;
       in_index++;
 
@@ -62,9 +65,15 @@ void rx_read(uint8_t number) {
       nmea_frame[in_index] = data;
       in_index++;
 
-      if (data == '*') {
-	process_gps_frame(nmea_frame);
-	in_index = -1;
+      /* If we're in a checksum sequence */
+      if (checksum_index) {
+	if (checksum_index++ == CHECKSUM_LENGTH) {
+	  process_gps_frame(nmea_frame);
+	  in_index = -1;
+	}
+      } else if (data == CHECKSUM_CODE) {
+	/* Otherwise look for the start of the checksum sequence */
+	checksum_index = 1;
       }
     }
   }
